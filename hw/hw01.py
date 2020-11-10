@@ -1,5 +1,5 @@
 #Day1 
-#2020-11-10
+#2020-11-09
 
 import numpy as np 
 from tensorflow.keras.models import Sequential

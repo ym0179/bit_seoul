@@ -1,11 +1,11 @@
 #Day1 
-#2020-11-10
+#2020-11-09
 
 import numpy as np 
 
 #1. 데이터
 x = np.array([1,2,3,4,5])
-y = np.array([4,5,6,7,8]) #정제된 데이터
+y = np.array([1,2,3,4,5]) #정제된 데이터
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -14,10 +14,11 @@ from tensorflow.keras.layers import Dense
 model = Sequential() #순차적으로 위에서 부터 밑에까지 연산
 #연산 하나하나가 y = wx + b, 각각 최적의 w값 구함
 #곱셈의 확률
-model.add(Dense(3, input_dim=1)) #input dimension: 1개가 입력이 됨
+model.add(Dense(300, input_dim=1)) #input dimension: 1개가 입력이 됨
 #Dense 단순 DNN
-model.add(Dense(5))
-model.add(Dense(3))
+model.add(Dense(5000))
+model.add(Dense(30))
+model.add(Dense(7))
 model.add(Dense(1))
 #하이퍼파라미터 튜닝
 
