@@ -17,7 +17,6 @@ from tensorflow.keras.layers import Dense
 #2. 모델 구성
 model = Sequential()
 model.add(Dense(10, input_dim=1))
-# model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(7))
 model.add(Dense(1))

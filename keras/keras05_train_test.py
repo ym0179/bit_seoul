@@ -7,7 +7,7 @@ import numpy as np
 #학습시킨 데이터로 평가하면 안됨
 x = np.array([1,2,3,4,5,6,7,8,9,10])
 y = np.array([1,2,3,4,5,6,7,8,9,10])
-x_pred = np.array([11,12,13])
+x_pred = np.array([11,12,13]) #예측값
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
