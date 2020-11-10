@@ -24,6 +24,7 @@ loss, mse = model.evaluate(x, y, batch_size=1)
 
 print("loss: ", loss)
 print("mse: ", mse)
+#결과값 동일
 
 result = model.predict(x2)
 print("predicted result: ", result)
