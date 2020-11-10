@@ -7,7 +7,7 @@ x_train = x[:60] #60개
 y_train = y[:60]
 x_val = x[60:80] #20개
 y_val = x[60:80]
-x_test = x[-20:]#20개
+x_test = x[-20:] #20개
 y_test = y[-20:]
 
 # print(x_train)
