@@ -1,3 +1,6 @@
+#Day2
+#2020-11-10
+
 #Multi-Layer Perceptron 다층 퍼셉트론
 
 '''

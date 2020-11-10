@@ -1,3 +1,6 @@
+#Day2
+#2020-11-10
+
 #1. 데이터
 import numpy as np 
 x = np.array(range(1,101)) # 1-100까지

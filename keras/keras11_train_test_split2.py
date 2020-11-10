@@ -1,3 +1,6 @@
+#Day2
+#2020-11-10
+
 '''
 train_test_split 0.8 / train_valid split 0.7
 loss:  [9.022187441587448e-10, 2.593994213384576e-05]
