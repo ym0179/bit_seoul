@@ -1,3 +1,6 @@
+#Day1 
+#2020-11-10
+
 import numpy as np 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense

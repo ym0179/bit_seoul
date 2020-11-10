@@ -1,4 +1,5 @@
-#파이썬 테스트
+#Day1 
+#2020-11-10
 
 print("hello world")
 a = 1

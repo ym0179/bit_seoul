@@ -1,3 +1,6 @@
+#Day1 
+#2020-11-10
+
 import tensorflow as tf
 import keras
 
