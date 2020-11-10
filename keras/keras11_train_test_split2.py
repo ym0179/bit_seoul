@@ -22,6 +22,8 @@ R2 :  0.906552511187276
 train_test_split 0.8 / train_valid split 0.8
 loss:  [1.800362952053547e-07, 0.0003562927304301411]
 R2 :  0.9999999996982817
+
+=> train / test split를 할 때 0.7 또는 0.8이 적당
 '''
 
 #1. 데이터
@@ -33,9 +35,9 @@ from sklearn.model_selection import train_test_split
 # x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.7) #train 70%, test 30%
 # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3) #train 70%, test 30%
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size = 0.7, test_size = 0.2)
+    x, y, train_size = 0.8)
 x_train, x_val, y_train, y_val = train_test_split(
-    x_train, y_train, train_size = 0.7)
+    x_train, y_train, train_size = 0.5)
 
 
 #2. 모델 구성
