@@ -5,7 +5,11 @@ y = np.array(range(101,201)) # 101-200까지
 
 from sklearn.model_selection import train_test_split
 # x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.7) #train 70%, test 30%
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3) #train 70%, test 30%
+# x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3) #train 70%, test 30%
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, train_size = 0.7, shuffle=True) #shuffle=true default
+    #성능은 shuffle 한게 좋음
+
 
 print(x_test) #랜덤
 
