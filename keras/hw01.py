@@ -26,3 +26,4 @@ result = model.predict(x2)
 print("predicted result: ", result)
 #회귀 모델은 선형이기 때문에 딱 맞아떨어지지 않음 -> 소수점을 사용 = accuracy는 평가지표로 사용할 수 없음
 #accuracy는 분류모델에서 사용
+#RMSE(Root Mean Squeared Error)

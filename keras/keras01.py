@@ -25,13 +25,19 @@ model.compile(loss="mse", optimizer="adam", metrics=["acc"])
 #최적화 함수 adam
 #평가방식 accuracy
 
-model.fit(x, y, epochs=100, batch_size=1) #정제된 데이터 모델에게 줌
+# model.fit(x, y, epochs=100, batch_size=1) #정제된 데이터 모델에게 줌
 #epochs 100번 훈련
 #batch size 1 - 한개씩 잘라서 넣는다
+#batch size default = 32
+#batch size가 전체 데이터 수보다 큰 경우에는 자동으로 전체 데이터 수로 잡음
 
 
 #4. 평가, 예측
-loss, acc = model.evaluate(x, y, batch_size=1)
+# loss, acc = model.evaluate(x, y, batch_size=1)
+
+#without batch_size
+model.fit(x, y, epochs=1000)
+loss, acc = model.evaluate(x, y)
 
 print("loss: ", loss)
 print("acc: ", acc)
