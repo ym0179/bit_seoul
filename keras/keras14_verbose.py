@@ -27,7 +27,7 @@ model.add(Dense(1))
 #3. 컴파일, 훈련
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 model.fit(x_train,y_train,validation_split=0.2,
-        batch_size=1,epochs=100,verbose=1)
+        epochs=100,verbose=1)
 '''
 verbose: Integer 0 / 1 / 2 / 3
 Verbosity mode:
@@ -39,7 +39,7 @@ Verbosity mode:
 
 #4. 평가,예측
 #val_loss 중요함
-loss, mae = model.evaluate(x_test,y_test,batch_size=1)
+loss, mae = model.evaluate(x_test,y_test)
 print("loss: ",loss)
 print("MAE: ",mae)
 
