@@ -1,6 +1,6 @@
 #Day3
 #2020-11-11
-#실습 train_test_split를 슬라이싱으로 바꿀 것
+#실습 train_test_split을 슬라이싱으로 바꿀 것
 
 
 #1. 데이터
