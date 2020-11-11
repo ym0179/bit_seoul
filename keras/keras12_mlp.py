@@ -38,6 +38,7 @@ from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.7)
 # x_train, x_val, y_train, y_val = train_test_split(x_train,y_train,train_size=0.7)
 
+
 #행 무시 열 우선 -> 특성을 구분하는 것은 column (=feature 피쳐)
 
 # y1, y2, y3 = w1x1 + w2x2 + w3x3 + b
@@ -47,7 +48,7 @@ from tensorflow.keras.models import Sequential #순차적 모델 구성
 from tensorflow.keras.layers import Dense #Dense model
 
 model = Sequential()
-# model.add(Dense(10, input_dim = 3))
+# model.add(Dense(10, input_dim = 3)) #dimension 3개 = column 3개
 model.add(Dense(10, input_shape = (3,))) #column이 3개
 model.add(Dense(5))
 model.add(Dense(3)) #출력 3개
