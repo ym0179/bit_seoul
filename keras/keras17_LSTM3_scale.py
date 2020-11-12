@@ -36,10 +36,13 @@ model.summary()
 #3. 컴파일, 훈련
 
 model.compile(loss="mse",optimizer='adam')
-model.fit(x,y,epochs=500,batch_size=1,verbose=2) #LSTM은 파라미터가 많기 때문에 충분한 훈련량 필요
+model.fit(x,y,epochs=1000,batch_size=1,verbose=2) #LSTM은 파라미터가 많기 때문에 충분한 훈련량 필요
 
 #4. 예측
 x_input = x_input.reshape(1,3,1)
 result = model.predict(x_input)
 # print("x",x_input)
 print("result : ",result)
+
+loss = model.evaluate(x,y,batch_size=1)
+print("loss : ",loss)
