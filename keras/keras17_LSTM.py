@@ -20,13 +20,11 @@ print("y.shape : ", y.shape)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM
 model = Sequential()
-model.add(LSTM(30, activation = 'relu', input_shape = (3,1))) #(3,1) LSTM에서
-#x 인풋 (4,3) => LSTM의 2차원의 인풋을 받음 (4,3,1) 몇개씩 잘라서 작업할건가 -> 행 무시
-#행,열,몇개씩 자르는지 3차원 데이터로 바꿔줘야함
-#[[[1],[2],[3]], [[2],[3],[4]], [[3],[4],[5]], [[4],[5],[6]]] #(4,3,1)
-#LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨 
+model.add(LSTM(30, activation = 'relu', input_shape = (3,1)))
+#(행,열,몇개씩 자르는지) -> 3차원 데이터로 바꿔줘야함
+#(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨 
+#like [[[1],[2],[3]], [[2],[3],[4]], [[3],[4],[5]], [[4],[5],[6]]] = (4,3,1)
 model.add(Dense(20))
-# model.add(Dense(10))
 model.add(Dense(1))
 
 model.summary()
@@ -41,7 +39,7 @@ LSTM 구조: 오랜 기간동안 정보를 기억하는 특징, 체인구조
 - Updating the cell state
 - The output gate
 
-
+계산방법1. 
 g: no. of FFNNs in a unit (RNN has 1, GRU has 3, LSTM has 4) *****
 h: size of hidden units
 i: dimension/size of input
@@ -52,11 +50,14 @@ num_params = g × [h(h+i) + h]
 model.add(LSTM(30, input_shape = (3,1))) => 4*(30(30+1)+30)
 model.add(LSTM(10, input_shape = (3,1))) => 4*(10(10+1)+10)
 
+https://brunch.co.kr/@chris-song/9
+============================================================
+계산방법2.
 
-4*(1+1+10)*10
+model.add(LSTM(30, input_shape = (3,1))) => 4*(1+1+10)*10
 4(gate 총 4개) * (몇개씩 잘라서 작업 + bias(=1) + 다음 레이어 노드 수) * 다음 레이어 노드 수
 
-LSTM은 연산양이 많음 => 속도 느려짐
+* LSTM은 연산양이 많음 => 속도 느려짐
 '''
 
 #3. 컴파일, 훈련

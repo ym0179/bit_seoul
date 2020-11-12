@@ -19,16 +19,24 @@ x = x.reshape(13,3,1)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM
 model = Sequential()
-model.add(LSTM(30,activation='relu',input_shape=(3,1)))
+model.add(LSTM(35,activation='relu',input_shape=(3,1)))
 model.add(Dense(20,activation='relu'))
+model.add(Dense(15,activation='relu'))
 model.add(Dense(7,activation='relu'))
-model.add(Dense(5,activation='relu'))
 model.add(Dense(1))
+
+# model.add(LSTM(30,activation='relu',input_shape=(3,1)))
+# model.add(Dense(20,activation='relu'))
+# model.add(Dense(7,activation='relu'))
+# model.add(Dense(5,activation='relu'))
+# model.add(Dense(1))
+
+model.summary()
 
 #3. 컴파일, 훈련
 
 model.compile(loss="mse",optimizer='adam')
-model.fit(x,y,epochs=1000,batch_size=1,verbose=2)
+model.fit(x,y,epochs=500,batch_size=1,verbose=2) #LSTM은 파라미터가 많기 때문에 충분한 훈련량 필요
 
 #4. 예측
 x_input = x_input.reshape(1,3,1)
