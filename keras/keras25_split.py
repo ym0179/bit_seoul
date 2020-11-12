@@ -15,7 +15,7 @@ def split_x(seq, size):
         aaa.append([item for item in subset])
         print("type :",type(aaa))
         print("aaa :",aaa)
-        return np.array(aaa)
+    return np.array(aaa)
 
 datasets = split_x(dataset, size)
 print("===================")
