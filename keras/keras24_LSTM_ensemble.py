@@ -29,7 +29,7 @@ from tensorflow.keras.layers import Input, Dense, LSTM
 input1 = Input(shape=(3,1))
 lstm1 = LSTM(30,activation='relu')(input1)
 dense1 = Dense(15,activation='relu')(lstm1)
-dense1 = Dense(10,activation='relu')(dense1)
+# dense1 = Dense(10,activation='relu')(dense1)
 output1 = Dense(7,activation='relu')(dense1)
 output1 = Dense(3,activation='relu')(dense1)
 
@@ -43,11 +43,11 @@ from tensorflow.keras.layers import concatenate
 merge1 = concatenate([output1,output2])
 middle1 = Dense(20,activation='relu')(merge1)
 # middle1 = Dense(20,activation='relu')(middle1)
-middle1 = Dense(15,activation='relu')(middle1)
-# middle1 = Dense(10,activation='relu')(middle1)
+middle1 = Dense(10,activation='relu')(middle1)
+# middle1 = Dense(7,activation='relu')(middle1)
 
 output = Dense(15,activation='relu')(middle1)
-output = Dense(7,activation='relu')(output)
+output = Dense(10,activation='relu')(output)
 output = Dense(5,activation='relu')(output)
 output = Dense(1)(output)
 
@@ -64,7 +64,7 @@ model.fit([x1,x2],y,epochs=1000,batch_size=1,verbose=2,callbacks=[es])
 loss = model.evaluate([x1,x2],y,batch_size=1)
 print("loss : ",loss)
 result1 = model.predict([x1_predict, x2_predict])
-result2 = model.predict([x2_predict, x1_predict])
+# result2 = model.predict([x2_predict, x1_predict])
 print("result1 : ",result1) #85
-print("result2 : ",result2) #95
+# print("result2 : ",result2) #95
 
