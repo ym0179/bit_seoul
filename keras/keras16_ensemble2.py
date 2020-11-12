@@ -35,7 +35,7 @@ dense1_1 = Dense(5, activation='relu',name='dense1_1')(input1)
 dense1_2 = Dense(5, activation='relu',name='dense1_2')(dense1_1)
 dense1_3 = Dense(4, activation='relu',name='dense1_3')(dense1_2)
 dense1_4 = Dense(3, activation='relu',name='dense1_4')(dense1_3)
-output1 = Dense(3, activation='linear',name='dense1_5')(dense1_4)
+output1 = Dense(3, activation='relu',name='dense1_5')(dense1_4)
 model1 = Model(inputs=input1,outputs=output1)
 # model1.summary()
 
@@ -44,7 +44,7 @@ input2 = Input(shape=(3,)) #입력 2
 dense2_1 = Dense(15, activation='relu',name='dense2_1')(input2)
 dense2_2 = Dense(7, activation='relu',name='dense2_2')(dense2_1)
 dense2_3 = Dense(3, activation='relu',name='dense2_3')(dense2_2)
-output2 = Dense(3, activation='linear',name='dense2_4')(dense2_3)
+output2 = Dense(3, activation='relu',name='dense2_4')(dense2_3)
 model2 = Model(inputs=input2,outputs=output2)
 # model2.summary()
 
