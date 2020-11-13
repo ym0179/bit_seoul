@@ -15,6 +15,8 @@ x = array([[1,2,3],[2,3,4],[3,4,5],[4,5,6],
 y = array([4,5,6,7,8,9,10,11,12,13,5000,6000,7000,400])
 x_pred = array([55,65,75])  #(3,)
 x_pred = x_pred.reshape(1,3)   #(1,3)
+x_pred2 = array([6600,6700,6800])  #(3,)
+
 
 # 데이터 전처리 - scaling
 # x값만 하면됨
@@ -22,8 +24,9 @@ x_pred = x_pred.reshape(1,3)   #(1,3)
 # Xscale = (X-Xmin) / (Xmax-Xmin)
 from sklearn.preprocessing import MinMaxScaler #2차원 까지
 scaler = MinMaxScaler()
-scaler.fit(x)
-x = scaler.transform(x)
+scaler.fit(x) #fit은 train data만 함
+x = scaler.transform(x) #0과 1사이의 값
+x_pred = scaler.transform(x_pred)
 # x = scaler.fit_transform(x)
 # print(x)
 
@@ -47,12 +50,8 @@ from tensorflow.keras.layers import Dense, LSTM, Input
 # output1 = Dense(1)(dense)
 # model = Model(inputs=input1, outputs=output1)
 model = Sequential()
-model.add(Dense(30, activation = 'relu', input_shape = (3,)))
-# model.add(Dense(100, activation = 'relu'))
-# model.add(Dense(50, activation = 'relu'))
+model.add(Dense(40, activation = 'relu', input_shape = (3,)))
 model.add(Dense(30, activation = 'relu'))
-# model.add(Dense(50, activation = 'relu'))
-# model.add(Dense(60, activation = 'relu'))
 model.add(Dense(20, activation = 'relu'))
 model.add(Dense(10, activation = 'relu'))
 model.add(Dense(1))
@@ -63,7 +62,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 
 from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
-es = EarlyStopping(monitor='loss', patience=50)
+es = EarlyStopping(monitor='loss', patience=10)
 
 to_hist = TensorBoard(log_dir="graph",
                       histogram_freq=0,
@@ -73,9 +72,9 @@ to_hist = TensorBoard(log_dir="graph",
 history = model.fit(
     x_train,
     y_train,
-    # callbacks=[es,to_hist],
+    callbacks=[es,to_hist],
     validation_data=(x_val,y_val),
-    epochs=1000, 
+    epochs=500, 
     verbose=2,
     batch_size=1
 )

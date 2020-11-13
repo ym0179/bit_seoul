@@ -4,7 +4,7 @@
 #1. 데이터
 import numpy as np
 dataset = np.array(range(1,101))
-size = 5
+size = 5 #열의 갯수
 
 #데이터 전처리 
 def split_x(seq, size):
@@ -15,15 +15,23 @@ def split_x(seq, size):
         aaa.append(subset)
     return np.array(aaa)
 
-dataset = split_x(dataset, size)
+datasets = split_x(dataset, size)
+print(datasets)
+print(datasets.shape) #(96,5)
+#행의 갯수는 dataset 사이즈 - size + 1
 
-x = dataset[0:100, 0:4]
-y = dataset[0:100, 4]
-x = x.reshape(x.shape[0], x.shape[1], 1) #(96, 4, 1)
+x = datasets[:, :4]
+y = datasets[:, 4]
+print("x.shape:", x.shape) # (96, 4)
+print("y.shape:", y.shape) # (96,)
+print(x)
+print(y)
+x = x.reshape(x.shape[0], x.shape[1], 1) # (96, 4, 1)
+print("reshape x.shape:", x.shape)
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.8, shuffle=True
+    x, y, train_size=0.7, shuffle=True
 )
 
 #모델을 구성하시오.

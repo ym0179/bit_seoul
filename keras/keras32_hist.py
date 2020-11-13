@@ -16,23 +16,17 @@ def split_x(seq, size):
         aaa.append(subset)
     return np.array(aaa)
 
-dataset = split_x(dataset, size)
-print("dataset shape : ",dataset.shape)
-# dataset[:, 0:4]
-# dataset[:, 4]
+datasets = split_x(dataset, size)
 
-#100-5+1
-#(96,4)
-x = dataset[0:100, 0:4]
-y = dataset[0:100, 4]
+x = datasets[:, :4]
+y = datasets[:, 4]
 
 # x = x.reshape(x.shape[0], 4, 1)
-x = x.reshape(x.shape[0], x.shape[1], 1) #(96, 4, 1)
-# print("x shape : ",x.shape) 
+x = x.reshape(x.shape[0], x.shape[1], 1)
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.9, shuffle=False #보기 편하게 하기 위해 - 성능을 원하면: True
+    x, y, train_size=0.7, shuffle=False #보기 편하게 하기 위해 - 성능을 원하면: True
 )
 
 #모델을 구성하시오.
@@ -42,7 +36,6 @@ model = Sequential()
 model.add(LSTM(30, activation='relu', input_length=4, input_dim=1))
 model.add(Dense(50, activation='relu'))
 model.add(Dense(70, activation='relu'))
-model.add(Dense(300, activation='relu'))
 model.add(Dense(50, activation='relu'))
 model.add(Dense(30, activation='relu'))
 model.add(Dense(1)) #output: 1개
