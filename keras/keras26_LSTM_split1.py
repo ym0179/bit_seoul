@@ -20,14 +20,12 @@ def split_x(seq, size):
         # aaa.append([item for item in subset])
         aaa.append(subset)
         
-        
-        
+
     # print(type(aaa))
     return np.array(aaa)
 
 
-dataset = split_x(dataset, size)
-# print(dataset)
+datasets = split_x(dataset, size)
 
 
 #2차원 배열 slicing은 numpy 이용하기 
@@ -41,8 +39,8 @@ dataset = split_x(dataset, size)
 
 
 
-x = dataset[0:6, 0:4]
-y = dataset[0:6, 4]
+x = datasets[0:6, 0:4]
+y = datasets[0:6, 4]
 
 x = x.reshape(6, 4, 1)
 

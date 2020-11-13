@@ -10,12 +10,8 @@ import numpy as np
 
 #1. 데이터
 
-
-
 dataset = np.array(range(1,101))
 size = 5
-
-
 
 #데이터 전처리 
 def split_x(seq, size):
@@ -28,29 +24,22 @@ def split_x(seq, size):
         # aaa.append([item for item in subset])
         aaa.append(subset)
         
-        
-        
     # print(type(aaa))
     return np.array(aaa)
 
+datasets = split_x(dataset, size)
 
-dataset = split_x(dataset, size)
-
-
-x = dataset[0:100, 0:4]
-y = dataset[0:100, 4]
+x = datasets[:, :4]
+y = datasets[:, 4]
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.7, shuffle=True
 )
 
-
 #모델을 구성하시오.
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM #LSTM도 layer
-
-
 model = Sequential()
 model.add(Dense(30, activation='relu', input_shape=(4,))) # *****
 model.add(Dense(50, activation='relu')) #default activation = linear
@@ -68,8 +57,8 @@ early_stopping = EarlyStopping(monitor='loss', patience=85, mode='auto')
 model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
 model.fit(
-    x,
-    y,
+    x_train,
+    y_train,
     callbacks=[early_stopping],
     validation_split=0.3,
     epochs=1000, batch_size=10
@@ -78,7 +67,6 @@ model.fit(
 
 
 #4. 평가, 예측
-
 #101.04
 loss, mse = model.evaluate(x_test, y_test)
 print(loss, mse)

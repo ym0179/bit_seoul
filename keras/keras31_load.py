@@ -21,24 +21,16 @@ def split_x(seq, size):
         # aaa.append([item for item in subset])
         aaa.append(subset)
         
-        
-        
     # print(type(aaa))
     return np.array(aaa)
 
 
-dataset = split_x(dataset, size)
+datasets = split_x(dataset, size)
 
+x = datasets[:, :4]
+y = datasets[:, 4]
+x = x.reshape(x.shape[0], x.shape[1], 1)
 
-#dataset[:, 0:4]
-#dataset[:, 4]
-#shape 확인하고 print한 다음 주석으로 적어 두기 
-
-x = dataset[0:100, 0:4]
-y = dataset[0:100, 4]
-
-
-x = x.reshape(x.shape[0], 4, 1)
 
 #차원과는 관계없이 비례에 맞춰서 잘라 준다!
 from sklearn.model_selection import train_test_split
@@ -48,52 +40,28 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 
 #모델을 구성하시오.
-from tensorflow.keras.models import load_model #Sequential 없이도 돌아감! load_model에서 같이 당겨온다 
-from tensorflow.keras.layers import Dense, LSTM #LSTM도 layer
-
-
-# model = Sequential()
-# model.add(LSTM(100, input_shape=(4, 1)))
-# model.add(Dense(50))
-# model.add(Dense(10))
-# model.add(Dense(1))
-
-# model.add(Dense(1)) #output: 1개
-
-
+from tensorflow.keras.models import load_model,Model #Sequential 없이도 돌아감! load_model에서 같이 당겨온다 
+from tensorflow.keras.layers import Dense, LSTM, Input #LSTM도 layer
 
 # 모델 불러오기
-
 from tensorflow.keras.models import model_from_json
-
 model = load_model('./save/keras26_model.h5')
+model.summary()
 
+#input layer 추가
+# model.add(LSTM(30, activation='relu', input_length=4, input_dim=1, name="input_layer"))
 
-#기존 모델에 커스터마이징하기
-# ValueError: All layers added to a Sequential model should have unique names. 
-# Name "dense" is already the name of a layer in this model. 
-# Update the `name` argument to pass a unique name.    
-# name 지정
+# 함수형
+# input1 = Input(shape=(4,1), name='input1')
+# dense = model(input1)
+# output1 = Dense(1)(dense)
+# model = Model(inputs=input1, outputs=output1)
+# model.summary()
 
-# model.add(Dense(10, name="king1"))
-
-#input layer
-model.add(LSTM(30, activation='relu', input_length=4, input_dim=1, name="input_layer"))
-
-json_string = model.to_json()
-model = model_from_json(json_string)
-
-model.add(Dense(1, name="king2"))
-
-from models import model_from_yaml
-yaml_string = model.to_yaml()
-model = model_from_yaml(yaml_string)
-
-# model.summary() #커스터마이징 할 때마다 돌려서 코드 새로 쓸 순 x
-
-
-
-
+# 시퀀셜로도 가능함
+model(Input(shape=(4,1), name='input1'))
+model.add(Dense(1, name='output1'))
+model.summary()
 
 
 #3. 컴파일 및 훈련
@@ -103,13 +71,12 @@ early_stopping = EarlyStopping(monitor='loss', patience=85, mode='auto')
 model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
 model.fit(
-    x,
-    y,
+    x_train,
+    y_train,
     callbacks=[early_stopping],
     validation_split=0.3,
     epochs=1000, batch_size=10
 )
-
 
 
 #4. 평가, 예측

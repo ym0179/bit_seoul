@@ -2,9 +2,7 @@
 #2020-11-13
 
 #모델 저장
-
 import numpy as np
-
 
 #모델을 구성하시오.
 from tensorflow.keras.models import Sequential
@@ -19,9 +17,6 @@ model.add(Dense(50, activation='relu'))
 model.add(Dense(30, activation='relu'))
 # model.add(Dense(1)) #output: 1개
 # output layer는 제외하고 저장
-
-
-
 
 
 # model.summary()
