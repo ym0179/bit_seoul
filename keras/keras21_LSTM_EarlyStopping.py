@@ -45,6 +45,14 @@ from tensorflow.keras.callbacks import EarlyStopping
 # es = EarlyStopping(monitor='loss',patience=100, mode='min')
 es = EarlyStopping(monitor='loss',patience=15, mode='auto')
 # patience: 오차를 보기 위해 과거 몇 epoch까지 거슬러 올라갈 것인가
+# performance measure가 최소화 시켜야하는 것이면 mode를 min 으로, 최대화 시켜야하는 것이면 mode를 max로 지정
+'''
+mode : 관찰 항목에 대해 개선이 없다고 판단하기 위한 기준을 지정
+- 예를 들어 관찰 항목이 ‘val_loss’인 경우에는 감소되는 것이 멈출 때 종료되어야 하므로, ‘min’으로 설정
+auto : 관찰하는 이름에 따라 자동으로 지정합니다.
+min : 관찰하고 있는 항목이 감소되는 것을 멈출 때 종료합니다.
+max : 관찰하고 있는 항목이 증가되는 것을 멈출 때 종료합니다.
+'''
 
 model.fit(x,y,epochs=10000,batch_size=1,verbose=2,
           callbacks=[es]) 

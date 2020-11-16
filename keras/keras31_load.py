@@ -44,7 +44,6 @@ from tensorflow.keras.models import load_model,Model #Sequential 없이도 돌�
 from tensorflow.keras.layers import Dense, LSTM, Input #LSTM도 layer
 
 # 모델 불러오기
-from tensorflow.keras.models import model_from_json
 model = load_model('./save/keras26_model.h5')
 model.summary()
 
