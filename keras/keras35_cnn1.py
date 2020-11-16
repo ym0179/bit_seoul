@@ -11,10 +11,10 @@ from tensorflow.keras.layers import Dense, Conv2D #Conv2D 2차원 이미지를 �
 model = Sequential()
 model.add(Conv2D(10, (2,2), input_shape=(10,10,1))) #channels = 흑백: 1 / 칼라: 3, 10X10 이미지
 # 2x2 = fliter / kernal size
-# 입력모양 : batch_size, rows, cols, channels
-# batch_size: 전체 데이터 안에서 내가 이용할 데이터 전체 개수 = 1 iteration에 학습할 데이터 개수
+# 입력모양 : batch_size, rows, cols, channels # 모델 관점에서 볼 때
+# batch_size: 전체 데이터 안에서 내가 "학습에" 이용할 데이터 전체 개수 = 1 iteration에 학습할 데이터 개수
 # iteration: 나뉘어진 데이터 조각 하나를 학습 / epoch는 모든 데이터 셋을 한번 학습한 횟수
-# input_shape = (rows, cols, channels)
+# input_shape = (rows, cols, channels) #batch_size 뺀 나머지
 '''
 tf.keras.layers.Conv2D(
     filters, # 필터의 개수. 많을수록 많은 특징을 추출할 수 있지만, 학습 속도가 느리고 과적합 문제 발생
@@ -32,8 +32,8 @@ tf.keras.layers.Conv2D(
 #참고 LSTM
 #units
 #reutrn_sequence
-#입력모양: batch_size, timesteps, feature
-#input_shape = (timesteps, feature)
+#입력모양: batch_size, timesteps, feature # 모델 관점에서 볼 때
+#input_shape = (timesteps, feature) #batch_size 뺀 나머지, feature: 몇개씩 자르는지
 
 # model.add(Conv2D(10, (2,2), input_shape=(5,5,1))) # output 값: (9x9x10) 
 model.add(Conv2D(5, (2,2), padding='same')) #output 값: (8x8x5) #padding 넣어줬을 때 output: (9x9x5)
@@ -65,7 +65,7 @@ model.add(Flatten())
 model.add(Dense(1))
 
 model.summary()
-# 2 x 2(필터 크기) * 1 (입력 채널(RGB)) * 10(출력 채널) + 10(출력 채널 bias)
+# 2 x 2(필터 크기) * 1 (입력 채널(RGB)) * 10(출력 채널) + 10(출력 채널 bias) / (1(입력) * 2 x 2 (커널 사이즈) + 1(bias)) * 10(출력)
 # 2 x 2(필터 크기) * 10 (입력 채널) * 5(출력 채널) + 5(출력 채널 bias)
 # 3 x 3(필터 크기) * 5 (입력 채널) * 3(출력 채널) + 3(출력 채널 bias)
 # 2 x 2(필터 크기) * 3 (입력 채널) * 7(출력 채널) + 7(출력 채널 bias)
