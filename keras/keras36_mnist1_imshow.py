@@ -28,6 +28,7 @@ plt.show()
 
 '''
 
+'''
 #원핫인코딩을 하면 (60000,) => (60000,10)으로 reshape (분류 10개)
 
 #sklearn 원핫인코딩
@@ -48,5 +49,6 @@ ec = np_utils.to_categorical(y)
 #판다스 원핫인코딩
 # DataFrame에서 category형 데이터 컬럼을 선택하여 자동으로 원핫인코딩을 해줌
 # 만약 겉보기에는 수치형 데이터 컬럼이지만, 실제로는 categorical 컬럼이라면 이 역시 원핫인코딩을 해줌
-import padas as pd
+import pandas as pd
 pd.get_dummies(y)
+'''
