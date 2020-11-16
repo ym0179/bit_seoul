@@ -81,6 +81,7 @@ print("예측값 : ", y_predicted)
 print("실제값 : ", y_pred_recovery)
 
 '''
+CNN & DNN 비교
 CNN
 loss :  0.1164519414305687
 acc :  0.9800999760627747
