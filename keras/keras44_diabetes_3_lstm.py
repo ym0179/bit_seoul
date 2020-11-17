@@ -55,10 +55,10 @@ from tensorflow.keras.layers import Dense, LSTM, Dropout
 #DNN - 1차원, RNN - 2차원, LSTM - 2차원
 model = Sequential()
 #(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨
-model.add(LSTM(32, activation='relu',input_shape=(10,1)))
-model.add(Dense(16, activation='relu'))
+model.add(LSTM(64, activation='relu',input_shape=(10,1)))
+model.add(Dense(32, activation='relu'))
 # model.add(Dropout(0.2))
-model.add(Dense(8, activation='relu'))
+model.add(Dense(16, activation='relu'))
 model.add(Dense(1))
 
 
@@ -95,5 +95,11 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-
+loss :  175.4331512451172
+mae :  9.558452606201172
+예측값 :  [156.1689    95.30786  157.5386   196.36264  165.21762  100.492134      
+ 134.82217   63.502544  96.94886  305.4689  ]
+실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
+RMSE :  13.245118573434373
+R2 :  0.9684464963203729
 '''
