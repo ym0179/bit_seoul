@@ -60,7 +60,7 @@ print("mae : ",mae)
 
 #5. 예측
 result = model.predict(x_pred)
-print("예측값 : ", result.T.reshape(10,))
+print("예측값 : ", result.T.reshape(10,)) #보기 쉽게
 print("실제값 : ", y_pred)
 
 y_predicted =  model.predict(x_test) #x_pred 10개밖에 없음응로 x_test 가지고 RMSE, R2 계산
@@ -78,6 +78,14 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
+#1
 RMSE :  1.368949050545954
 R2 :  0.9734144756232456
+
+#2
+예측값 :  [24.692533 21.921623 33.017033 32.04224  32.26689  25.371145 20.51319   
+ 18.475174 14.318202 18.430988]
+실제값 :  [24.  21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9]
+RMSE :  1.8120813885400564
+R2 :  0.9644983026255848
 '''
