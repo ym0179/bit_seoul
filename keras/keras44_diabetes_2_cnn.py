@@ -25,12 +25,13 @@ from sklearn.datasets import load_diabetes
 dataset = load_diabetes()
 x = dataset.data
 y = dataset.target
-print(x)
-print(x.shape, y.shape) #(442, 10) (442,)
-# print(dataset)
+# print(x)
+# print(x.shape, y.shape) #(442, 10) (442,)
+
 x_pred = x[:10]
 y_pred = y[:10]
-# print(y_pred)
+
+
 #1. 전처리
 #scaling
 from sklearn.preprocessing import StandardScaler
@@ -40,6 +41,10 @@ scaler.fit(x) #fit은 train data만 함
 x = scaler.transform(x)
 x_pred = scaler.transform(x_pred)
 
+#reshape
+x = x.reshape(442,10,1,1)
+x_pred = x_pred.reshape(10,10,1,1)
+
 #train-test split
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
@@ -47,26 +52,20 @@ x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7
 
 #2. 모델링
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
-model.add(Dense(64, activation='relu',input_shape=(10,)))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(16, activation='relu'))
+model.add(Conv2D(64, (1,1), padding="same", input_shape=(10,1,1)))
+# model.add(Dropout(0.2))
+model.add(Flatten())
+model.add(Dense(64, activation='relu'))
 model.add(Dense(1))
-
-
-# model.add(Dense(32, activation='relu',input_shape=(13,)))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(16, activation='relu'))
-# model.add(Dense(8, activation='relu'))
-# model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='loss',patience=5,mode='auto')
+es = EarlyStopping(monitor='loss',patience=20,mode='auto')
 model.fit(x,y,epochs=300,batch_size=1,verbose=2,callbacks=[es]) 
 
 
@@ -95,11 +94,11 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-loss :  488.3173828125
-mae :  17.3438720703125
-예측값 :  [173.82996   89.20876  161.36313  216.35736  155.39937  116.379395      
- 113.778206  75.463165 137.78008  320.90433 ]
+loss :  1096.5654296875
+mae :  26.235523223876953
+예측값 :  [215.13042   79.78055  167.94815  229.58353  112.181076 118.887665      
+ 104.86642  112.43907  148.14041  253.3105  ]
 실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
-RMSE :  22.09789835187887
-R2 :  0.9185661050749945
+RMSE :  33.11442240532501
+R2 :  0.8169220391846712
 '''

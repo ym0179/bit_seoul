@@ -30,15 +30,18 @@ print(x.shape, y.shape) #(442, 10) (442,)
 # print(dataset)
 x_pred = x[:10]
 y_pred = y[:10]
-# print(y_pred)
+
 #1. 전처리
 #scaling
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
-
 scaler.fit(x) #fit은 train data만 함
 x = scaler.transform(x)
 x_pred = scaler.transform(x_pred)
+
+#reshape
+x = x.reshape(442,10,1)
+x_pred = x_pred.reshape(10,10,1)
 
 #train-test split
 from sklearn.model_selection import train_test_split
@@ -47,26 +50,23 @@ x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7
 
 #2. 모델링
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.layers import Dense, LSTM, Dropout
+#input shape
+#DNN - 1차원, RNN - 2차원, LSTM - 2차원
 model = Sequential()
-model.add(Dense(64, activation='relu',input_shape=(10,)))
-model.add(Dense(32, activation='relu'))
+#(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨
+model.add(LSTM(32, activation='relu',input_shape=(10,1)))
 model.add(Dense(16, activation='relu'))
+# model.add(Dropout(0.2))
+model.add(Dense(8, activation='relu'))
 model.add(Dense(1))
-
-
-# model.add(Dense(32, activation='relu',input_shape=(13,)))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(16, activation='relu'))
-# model.add(Dense(8, activation='relu'))
-# model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='loss',patience=5,mode='auto')
+es = EarlyStopping(monitor='loss',patience=10,mode='auto')
 model.fit(x,y,epochs=300,batch_size=1,verbose=2,callbacks=[es]) 
 
 
@@ -95,11 +95,5 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-loss :  488.3173828125
-mae :  17.3438720703125
-예측값 :  [173.82996   89.20876  161.36313  216.35736  155.39937  116.379395      
- 113.778206  75.463165 137.78008  320.90433 ]
-실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
-RMSE :  22.09789835187887
-R2 :  0.9185661050749945
+
 '''

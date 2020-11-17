@@ -49,7 +49,7 @@ from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
 #DNN - 1차원, RNN - 2차원, LSTM - 2차원
 model = Sequential()
 #lstm는 activation default tanh
-#(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨 = 32개로 나눔
+#(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨 = 28개로 나눔
 model.add(LSTM(64, activation='relu',input_shape=(28,28)))
 model.add(Dense(256, activation='relu'))
 model.add(Dense(128, activation='relu'))

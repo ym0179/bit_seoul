@@ -48,6 +48,7 @@ x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7
 #2. 모델링
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
+# 2
 model = Sequential()
 model.add(Dense(64, activation='relu',input_shape=(10,)))
 model.add(Dense(32, activation='relu'))
@@ -56,10 +57,11 @@ model.add(Dense(8, activation='relu'))
 model.add(Dense(1))
 
 
-# model.add(Dense(32, activation='relu',input_shape=(13,)))
+# 1
+# model.add(Dense(64, activation='relu',input_shape=(10,)))
 # model.add(Dense(32, activation='relu'))
 # model.add(Dense(16, activation='relu'))
-# model.add(Dense(8, activation='relu'))
+# model.add(Dense(1))
 # model.add(Dense(1))
 
 
@@ -96,6 +98,8 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
+#1
+
 loss :  488.3173828125
 mae :  17.3438720703125
 예측값 :  [173.82996   89.20876  161.36313  216.35736  155.39937  116.379395      
@@ -103,4 +107,13 @@ mae :  17.3438720703125
 실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
 RMSE :  22.09789835187887
 R2 :  0.9185661050749945
+
+#2
+loss :  309.3225402832031
+mae :  13.3930025100708
+예측값 :  [172.94281  74.36158 140.47353 209.24614 130.08655 116.58305 141.999    
+  82.47109 106.71752 296.01144]
+실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
+RMSE :  17.587562435670577
+R2 :  0.950373577308628
 '''

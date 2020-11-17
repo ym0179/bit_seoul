@@ -18,10 +18,13 @@ y_pred = y[:10]
 #scaling
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
-
 scaler.fit(x) #fit은 train data만 함
 x = scaler.transform(x)
 x_pred = scaler.transform(x_pred)
+
+#reshape
+x = x.reshape(506,13,1,1)
+x_pred = x_pred.reshape(10,13,1,1)
 
 #train-test split
 from sklearn.model_selection import train_test_split
@@ -30,20 +33,18 @@ x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7
 
 #2. 모델링
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
-model.add(Dense(64, activation='relu',input_shape=(13,)))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(10, activation='relu'))
+model.add(Conv2D(32, (1,1), padding="same", input_shape=(13,1,1)))
+model.add(Conv2D(16, (1,1), padding="same"))
+model.add(Conv2D(8, (1,1), padding="same"))
+# model.add(MaxPooling2D(pool_size=1))
+model.add(Dropout(0.2))
+model.add(Flatten())
+model.add(Dense(64, activation='relu'))
 model.add(Dense(1))
 
-
-# model.add(Dense(32, activation='relu',input_shape=(13,)))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(16, activation='relu'))
-# model.add(Dense(8, activation='relu'))
-# model.add(Dense(1))
-
+model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
@@ -78,14 +79,11 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-#1
-RMSE :  1.368949050545954
-R2 :  0.9734144756232456
-
-#2
-예측값 :  [24.692533 21.921623 33.017033 32.04224  32.26689  25.371145 20.51319   
- 18.475174 14.318202 18.430988]
+loss :  5.919500827789307
+mae :  1.8241873979568481
+예측값 :  [27.486176 22.857874 33.5666   32.78015  32.47349  25.43216  20.686827  
+ 18.912424 16.101309 18.271753]
 실제값 :  [24.  21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9]
-RMSE :  1.8120813885400564
-R2 :  0.9644983026255848
+RMSE :  2.433002287464581
+R2 :  0.9156736462285185
 '''
