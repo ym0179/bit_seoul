@@ -44,11 +44,12 @@ y_pred = y_test[:10]
 
 #2. 모델
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
 model.add(Conv2D(64, (3,3), padding="same", input_shape=(28,28,1)))
 model.add(Conv2D(32, (2,2), padding="same"))
 model.add(MaxPooling2D(pool_size=2))
+model.add(Dropout(0.2))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dense(10, activation='softmax'))
@@ -76,8 +77,15 @@ print("예측값 : ", y_predicted)
 print("실제값 : ", y_pred_recovery)
 
 '''
+without Dropout
 loss :  1.000251054763794
 acc :  0.9003000259399414
+예측값 :  [9 2 1 1 6 1 4 6 5 7]
+실제값 :  [9 2 1 1 6 1 4 6 5 7]
+
+with Dropout
+loss :  0.8901495933532715
+acc :  0.9067999720573425
 예측값 :  [9 2 1 1 6 1 4 6 5 7]
 실제값 :  [9 2 1 1 6 1 4 6 5 7]
 '''

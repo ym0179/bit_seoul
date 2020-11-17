@@ -6,8 +6,8 @@
 
 from sklearn.datasets import load_boston
 dataset = load_boston()
-x = dataset.data()
-y = dataset.target()
+x = dataset.data
+y = dataset.target
 print(x)
 print(x.shape, y.shape) #(506, 13) (506,)
 
@@ -32,17 +32,17 @@ x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 model = Sequential()
-# model.add(Dense(64, activation='relu',input_shape=(13,)))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(10, activation='relu'))
-# model.add(Dense(1))
-
-
-model.add(Dense(32, activation='relu',input_shape=(13,)))
+model.add(Dense(64, activation='relu',input_shape=(13,)))
 model.add(Dense(32, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(8, activation='relu'))
+model.add(Dense(10, activation='relu'))
 model.add(Dense(1))
+
+
+# model.add(Dense(32, activation='relu',input_shape=(13,)))
+# model.add(Dense(32, activation='relu'))
+# model.add(Dense(16, activation='relu'))
+# model.add(Dense(8, activation='relu'))
+# model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
@@ -60,11 +60,8 @@ print("mae : ",mae)
 
 #5. 예측
 result = model.predict(x_pred)
-print("예측값 : ", result)
+print("예측값 : ", result.T.reshape(10,))
 print("실제값 : ", y_pred)
-print(result.type())
-print(y_pred.type())
-
 
 y_predicted =  model.predict(x_test) #x_pred 10개밖에 없음응로 x_test 가지고 RMSE, R2 계산
 
