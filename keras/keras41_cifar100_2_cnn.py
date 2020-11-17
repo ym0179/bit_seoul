@@ -32,23 +32,26 @@ y_pred = y_test[:20]
 
 #2. 모델
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
-model.add(Conv2D(32, (3,3), padding="same", input_shape=(32,32,3)))
-model.add(Conv2D(32, (3,3), padding="same"))
+model.add(Conv2D(64, (3,3), padding="same", input_shape=(32,32,3)))
+model.add(Conv2D(64, (3,3), padding="same"))
 model.add(MaxPooling2D(pool_size=2))
+model.add(Dropout(0.5))
+model.add(Conv2D(128, (3,3), padding="same"))
+model.add(Conv2D(256, (3,3), padding="same"))
+model.add(MaxPooling2D(pool_size=2))
+model.add(Dropout(0.5))
 model.add(Conv2D(64, (3,3), padding="same"))
 model.add(Conv2D(64, (3,3), padding="same"))
 model.add(MaxPooling2D(pool_size=2))
-model.add(Conv2D(128, (3,3), padding="same"))
-model.add(Conv2D(128, (3,3), padding="same"))
-model.add(MaxPooling2D(pool_size=2))
-model.add(Conv2D(256, (3,3), padding="same"))
-model.add(Conv2D(256, (3,3), padding="same"))
-model.add(MaxPooling2D(pool_size=2))
+model.add(Dropout(0.5))
+# model.add(Conv2D(32, (3,3), padding="same"))
+# model.add(Conv2D(32, (3,3), padding="same"))
+# model.add(MaxPooling2D(pool_size=2))
+# model.add(Dropout(0.5))
 model.add(Flatten())
-model.add(Dense(256, activation='relu'))
-# model.add(Dense(128, activation='relu'))
+model.add(Dense(512, activation='relu'))
 model.add(Dense(100, activation='softmax'))
 
 
@@ -58,7 +61,7 @@ model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["acc"]
 
 from tensorflow.keras.callbacks import EarlyStopping
 es = EarlyStopping(patience=10,mode='auto',monitor='loss')
-model.fit(x_train, y_train, epochs=300, batch_size=64, verbose=2, validation_split=0.2, callbacks=[es])
+model.fit(x_train, y_train, epochs=300, batch_size=64, verbose=1, validation_split=0.2, callbacks=[es])
 
 #4. 평가, 예측
 loss, acc = model.evaluate(x_test,y_test,batch_size=64)
@@ -74,4 +77,8 @@ print("예측값 : ", y_predicted)
 print("실제값 : ", y_pred_recovery)
 
 '''
+loss :  6.634278774261475
+acc :  0.35749998688697815
+예측값 :  [95 38 93  3 71 79  1 50 71 53 87 72 81 69 40 38 92 42 70 92]
+실제값 :  [49 33 72 51 71 92 15 14 23  0 71 75 81 69 40 43 92 97 70 53]   
 '''
