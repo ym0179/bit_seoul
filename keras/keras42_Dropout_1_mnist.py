@@ -2,8 +2,7 @@
 #2020-11-16
 
 #mnist (0-9까지의 손글씨) 예제
-#Dropout
-#신경망 학습을 할 때 전체가 아닌 일부의 뉴런만 사용
+#Dropout: 신경망 학습을 할 때 전체가 아닌 일부의 뉴런만 사용
 
 import numpy as np 
 import matplotlib.pyplot as plt  
