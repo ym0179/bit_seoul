@@ -22,7 +22,7 @@ y_test = to_categorical(y_test)
 print(y_train.shape, y_test.shape) #(60000, 10) (10000, 10)
 print(y_train[0])
 
-x_train = x_train.reshape(60000, 28, 28, 1).astype('float32')/255.
+x_train = x_train.reshape(60000, 28, 28, 1).astype('float32')/255. #마지막은 채널 1 (흑백)
 x_test = x_test.reshape(10000, 28, 28, 1).astype('float32')/255.
 # x_test = x_test.reshape(x_test.shape[0], x_test.shape[1], x_test.shape[2], 1)
 print(x_train[0])
