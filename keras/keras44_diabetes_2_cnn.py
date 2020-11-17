@@ -57,10 +57,22 @@ model = Sequential()
 model.add(Conv2D(64, (1,1), padding="same", input_shape=(10,1,1)))
 model.add(Conv2D(32, (1,1), padding="same"))
 model.add(Conv2D(16, (1,1), padding="same"))
-# model.add(Dropout(0.2))
+model.add(Dropout(0.2))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dense(1))
+
+
+# model = Sequential()
+# model.add(Conv2D(64, (1,1), padding="same", input_shape=(10,1,1)))
+# model.add(Conv2D(32, (1,1), padding="same"))
+# model.add(Conv2D(16, (1,1), padding="same"))
+# model.add(Conv2D(8, (1,1), padding="same"))
+# # model.add(Dropout(0.2))
+# model.add(Flatten())
+# model.add(Dense(64, activation='relu'))
+# model.add(Dense(1))
+
 
 
 #3. 컴파일, 훈련
@@ -96,11 +108,11 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-loss :  731.94970703125
-mae :  20.827747344970703
-예측값 :  [206.89622   77.7768   164.0007   193.97336   77.068146 116.33297       
-  91.006065  50.481884 142.32593  213.76892 ]
+loss :  734.5120239257812
+mae :  20.9671573638916
+예측값 :  [190.89946   77.341736 145.74294  208.00932  126.9415    64.30875       
+  80.48358   60.013577 127.38536  221.674   ]
 실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
-RMSE :  27.054563639912164
-R2 :  0.8723223125165701
+RMSE :  27.101887581822734
+R2 :  0.8793386688741549
 '''
