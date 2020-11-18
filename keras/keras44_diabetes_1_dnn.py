@@ -28,40 +28,51 @@ y = dataset.target
 print(x)
 print(x.shape, y.shape) #(442, 10) (442,)
 # print(dataset)
-x_pred = x[:10]
-y_pred = y[:10]
-# print(y_pred)
+
+# from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
+# scaler = StandardScaler()
+# scaler.fit(x) # fit하고
+# x = scaler.transform(x) # 사용할 수 있게 바꿔서 저장하자
+
 #1. 전처리
-#scaling
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-
-scaler.fit(x) #fit은 train data만 함
-x = scaler.transform(x)
-x_pred = scaler.transform(x_pred)
-
-#train-test split
+#train-test split -> scaling train 만 하니까 젤 먼저 split
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
 x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7)
 
+#scaling - 2차원 input만 가능 -> reshape 나중에
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(x_train) #fit은 train data만 함
+x_train = scaler.transform(x_train)
+x_val = scaler.transform(x_val)
+x_test = scaler.transform(x_test)
+
+x_pred = x_test[:10]
+y_pred = y_test[:10]
+
 #2. 모델링
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
-# 2
 model = Sequential()
 model.add(Dense(64, activation='relu',input_shape=(10,)))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(8, activation='relu'))
+model.add(Dropout(0.3))
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.3))
+model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(512, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(512, activation='relu'))
+model.add(Dropout(0.3))
+# model.add(Dense(32, activation='relu'))
+# model.add(Dropout(0.2))
 model.add(Dense(1))
 
-
-# 1
-# model.add(Dense(64, activation='relu',input_shape=(10,)))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(16, activation='relu'))
-# model.add(Dense(1))
+# model.add(Dense(64, activation='relu', input_shape=(x_train.shape[1],) ))
+# model.add(Dense(256, activation='relu'))
+# model.add(Dense(128, activation='relu'))
+# model.add(Dense(64, activation='relu'))
 # model.add(Dense(1))
 
 
@@ -69,9 +80,8 @@ model.add(Dense(1))
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='loss',patience=5,mode='auto')
-model.fit(x,y,epochs=300,batch_size=1,verbose=2,callbacks=[es]) 
-
+es = EarlyStopping(monitor='val_loss',patience=70,mode='auto')
+model.fit(x_train,y_train,epochs=500,batch_size=1,verbose=2,callbacks=[es],validation_split=0.3) 
 
 #4. 평가
 loss,mae = model.evaluate(x_test,y_test,batch_size=1)
@@ -98,22 +108,6 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-#1
 
-loss :  488.3173828125
-mae :  17.3438720703125
-예측값 :  [173.82996   89.20876  161.36313  216.35736  155.39937  116.379395      
- 113.778206  75.463165 137.78008  320.90433 ]
-실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
-RMSE :  22.09789835187887
-R2 :  0.9185661050749945
 
-#2
-loss :  309.3225402832031
-mae :  13.3930025100708
-예측값 :  [172.94281  74.36158 140.47353 209.24614 130.08655 116.58305 141.999    
-  82.47109 106.71752 296.01144]
-실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
-RMSE :  17.587562435670577
-R2 :  0.950373577308628
 '''

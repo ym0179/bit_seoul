@@ -33,22 +33,25 @@ y_pred = y[:10]
 
 
 #1. 전처리
-#scaling
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-
-scaler.fit(x) #fit은 train data만 함
-x = scaler.transform(x)
-x_pred = scaler.transform(x_pred)
-
-#reshape
-x = x.reshape(442,10,1,1)
-x_pred = x_pred.reshape(10,10,1,1)
-
 #train-test split
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
 x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7)
+
+#scaling
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(x_train) #fit은 train data만 함
+x_train = scaler.transform(x_train)
+x_val = scaler.transform(x_val)
+x_test = scaler.transform(x_test)
+
+#reshape
+x_train = x_train.reshape(x_train.shape[0],x_train.shape[1],1)
+x_val = x_val.reshape(x_val.shape[0],x_val.shape[1],1)
+x_test = x_test.reshape(x_test.shape[0],x_test.shape[1],1)
+x_pred = x_pred.reshape(10,10,1,1)
+
 
 #2. 모델링
 from tensorflow.keras.models import Sequential
@@ -57,7 +60,7 @@ model = Sequential()
 model.add(Conv2D(64, (1,1), padding="same", input_shape=(10,1,1)))
 model.add(Conv2D(32, (1,1), padding="same"))
 model.add(Conv2D(16, (1,1), padding="same"))
-model.add(Dropout(0.2))
+# model.add(Dropout(0.2))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dense(1))
@@ -80,7 +83,7 @@ model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
 from tensorflow.keras.callbacks import EarlyStopping
 es = EarlyStopping(monitor='loss',patience=20,mode='auto')
-model.fit(x,y,epochs=300,batch_size=1,verbose=2,callbacks=[es]) 
+model.fit(x_train,y_train,epochs=300,batch_size=1,verbose=2,callbacks=[es],validation_data=(x_val,y_val))  
 
 
 #4. 평가
@@ -108,11 +111,5 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-loss :  734.5120239257812
-mae :  20.9671573638916
-예측값 :  [190.89946   77.341736 145.74294  208.00932  126.9415    64.30875       
-  80.48358   60.013577 127.38536  221.674   ]
-실제값 :  [151.  75. 141. 206. 135.  97. 138.  63. 110. 310.]
-RMSE :  27.101887581822734
-R2 :  0.8793386688741549
+
 '''

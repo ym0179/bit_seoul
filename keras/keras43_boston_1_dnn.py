@@ -11,22 +11,22 @@ y = dataset.target
 print(x)
 print(x.shape, y.shape) #(506, 13) (506,)
 
-x_pred = x[:10]
-y_pred = y[:10]
-
 #1. 전처리
-#scaling
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-
-scaler.fit(x) #fit은 train data만 함
-x = scaler.transform(x)
-x_pred = scaler.transform(x_pred)
-
 #train-test split
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
 x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7)
+
+#scaling
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(x_train) #fit은 train data만 함
+x_train = scaler.transform(x_train)
+x_val = scaler.transform(x_val)
+x_test = scaler.transform(x_test)
+
+x_pred = x_test[:10]
+y_pred = y_test[:10]
 
 #2. 모델링
 from tensorflow.keras.models import Sequential
@@ -49,8 +49,8 @@ model.add(Dense(1))
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='loss',patience=5,mode='auto')
-model.fit(x,y,epochs=300,batch_size=1,verbose=2,callbacks=[es]) 
+es = EarlyStopping(monitor='val_loss',patience=15,mode='auto')
+model.fit(x_train,y_train,epochs=500,batch_size=1,verbose=2,callbacks=[es],validation_data=(x_val,y_val)) 
 
 
 #4. 평가
@@ -78,14 +78,11 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-#1
-RMSE :  1.368949050545954
-R2 :  0.9734144756232456
-
-#2
-예측값 :  [24.692533 21.921623 33.017033 32.04224  32.26689  25.371145 20.51319   
- 18.475174 14.318202 18.430988]
-실제값 :  [24.  21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9]
-RMSE :  1.8120813885400564
-R2 :  0.9644983026255848
+loss :  1.2785238027572632
+mae :  0.8258237838745117
+예측값 :  [21.734331 22.995958 35.20686  34.97407  24.362753 22.748114 29.465624
+ 31.22422   8.076776 24.598322]
+실제값 :  [21.  22.  35.4 36.1 23.3 21.2 29.6 32.2  8.5 24.8]        
+RMSE :  1.130718411993961
+R2 :  0.9846784372162021
 '''
