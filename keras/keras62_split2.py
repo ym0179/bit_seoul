@@ -14,7 +14,6 @@
 
 # def split_x(seq, size):
 #     aaa = []
-#     print("size :",size)
 #     for i in range(len(seq) - size + 1):
 #         subset = seq[i : (i+size)]
 #         aaa.append([subset])
@@ -25,6 +24,7 @@
 # print(dataset)
 
 
+import numpy as np
 from sklearn.datasets import load_iris
 test = load_iris()
 x = test.data
