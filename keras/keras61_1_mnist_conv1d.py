@@ -1,12 +1,12 @@
-#Day7
-#2020-11-17
-
-#mnist (0-9까지의 손글씨) 예제
-#mnist를 LSTM으로 코딩하시오
+#Day9
+#2020-11-19
 
 import numpy as np 
 import matplotlib.pyplot as plt  
 from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM, Conv1D, Flatten
+from tensorflow.keras.layers import MaxPooling1D, Dropout
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 # print(x_train.shape, x_test.shape) #(60000, 28, 28) (10000, 28, 28)
@@ -33,41 +33,42 @@ y_pred = y_test[-10:]
 
 
 #2. 모델
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM
-#input shape
-#DNN - 1차원, RNN - 2차원, LSTM - 2차원
 model = Sequential()
-#lstm는 activation default tanh
-#(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨 = 28개로 나눔
-model.add(LSTM(128, activation='relu',input_shape=(28,28),return_sequences=True))
-model.add(LSTM(64, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(30, activation='relu'))
-model.add(Dense(20, activation='relu'))
+# model.add(Conv1D(64, (3), padding="same", input_shape=(28,28)))
+# model.add(MaxPooling1D(pool_size=2))
+# model.add(Dropout(0.3))
+model.add(Conv1D(32, (3), padding="same",input_shape=(28,28)))
+model.add(MaxPooling1D(pool_size=2))
+model.add(Dropout(0.3))
+model.add(Conv1D(16, (3), padding="same"))
+model.add(MaxPooling1D(pool_size=2))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
 model.add(Dense(10, activation='softmax'))
 
-model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["acc"])
 
-from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(patience=5,mode='auto',monitor='loss')
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+es = EarlyStopping(patience=10,mode='auto',monitor='val_loss')
+modelpath = './model/mnist_conv1d.hdf5'
+cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss',
+                     save_best_only=True, mode='auto')
+model.fit(x_train, y_train, epochs=500, batch_size=64, verbose=2, 
+        validation_split=0.2, callbacks=[es,cp])
 
-model.fit(x_train, y_train, epochs=500, batch_size=64, verbose=1, validation_split=0.2, callbacks=[es])
+# 모델 불러오기
+from tensorflow.keras.models import load_model
+model = load_model('./model/mnist_conv1d.hdf5')
+
 
 #4. 평가, 예측
 loss, acc = model.evaluate(x_test,y_test,batch_size=64)
 print("loss : ", loss)
 print("acc : ", acc)
 
-# print("x_pred : ", x_pred)
-# print("y_pred : ", y_pred)
-
 result = model.predict(x_pred)
-
-# argmax는 가장 큰 값의 인덱스 값을 반환
 y_predicted = np.argmax(result,axis=1) # axis가 0 이면 열, axis가 1이면 행
 y_pred_recovery = np.argmax(y_pred, axis=1) #원핫인코딩 원복
 
@@ -75,8 +76,15 @@ print("예측값 : ", y_predicted)
 print("실제값 : ", y_pred_recovery)
 
 '''
+LSTM 모델
 loss :  0.06250455975532532
 acc :  0.9869999885559082
+예측값 :  [7 8 9 0 1 2 3 4 5 6]
+실제값 :  [7 8 9 0 1 2 3 4 5 6]
+
+Conv1D 모델
+loss :  0.05089378356933594
+acc :  0.9860000014305115
 예측값 :  [7 8 9 0 1 2 3 4 5 6]
 실제값 :  [7 8 9 0 1 2 3 4 5 6]
 '''

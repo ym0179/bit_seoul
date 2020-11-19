@@ -1,35 +1,16 @@
-#Day7
-#2020-11-17
-
-#당뇨병 진행도 예측 모델 학습 (sklearn 라이브러리)
-'''
-[x]
-442 행 10 열 
-Age
-Sex
-Body mass index
-Average blood pressure
-S1
-S2
-S3
-S4
-S5
-S6
-
-[y]
-442 행 1 열 
-target: a quantitative measure of disease progression one year after baseline
-'''
+#Day9
+#2020-11-19
 
 from sklearn.datasets import load_diabetes
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM, Dropout
+from tensorflow.keras.layers import Dense, LSTM, Conv1D, Flatten
+from tensorflow.keras.layers import MaxPooling1D, Dropout
 
 dataset = load_diabetes()
 x = dataset.data
 y = dataset.target
-print(x)
-print(x.shape, y.shape) #(442, 10) (442,)
+# print(x)
+# print(x.shape, y.shape) #(442, 10) (442,)
 # print(dataset)
 
 #1. 전처리
@@ -55,33 +36,42 @@ x_pred = x_test[:10]
 y_pred = y_test[:10]
 
 #2. 모델링
-#input shape
-#DNN - 1차원, RNN - 2차원, LSTM - 2차원
 model = Sequential()
-#(행,열,몇개씩 자르는지) -> 마지막에 LSTM 만들 때 한개씩 잘라서 연산하겠다는게 명시됨
-model.add(LSTM(64, activation='relu',input_shape=(10,1)))
+model.add(Conv1D(128, (2), padding="same", input_shape=(10,1)))
+model.add(MaxPooling1D(pool_size=2))
+model.add(Dropout(0.3))
+model.add(Conv1D(64, (2), padding="same"))
+model.add(Dropout(0.3))
+model.add(Conv1D(32, (2), padding="same"))
+model.add(MaxPooling1D(pool_size=2))
+model.add(Dropout(0.3))
+model.add(Conv1D(32, (2), padding="same"))
+model.add(Dropout(0.3))
+model.add(Flatten())
 model.add(Dense(256, activation='relu'))
-model.add(Dropout(0.4))
 model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.4))
-model.add(Dense(64, activation='relu'))
-# model.add(Dropout(0.3))
-model.add(Dense(32, activation='relu'))
-# model.add(Dropout(0.2))
-model.add(Dense(16, activation='relu'))
 model.add(Dense(1))
+
 
 
 #3. 컴파일, 훈련
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
-from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='val_loss',patience=10,mode='auto')
-model.fit(x_train,y_train,epochs=300,batch_size=1,verbose=2,callbacks=[es],validation_data=(x_val,y_val)) 
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+es = EarlyStopping(monitor='val_loss',patience=100,mode='auto')
+modelpath = './model/diabetes_conv1d-{epoch:02d}-{val_loss:.4f}.hdf5'
+cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss',
+                     save_best_only=True, mode='auto')
+model.fit(x_train,y_train,epochs=1000,batch_size=16,verbose=2,
+        callbacks=[es,cp],validation_data=(x_val,y_val)) 
+
+# 모델 불러오기
+from tensorflow.keras.models import load_model
+model = load_model('./model/diabetes_conv1d-57-3073.5078.hdf5')
 
 
 #4. 평가
-loss,mae = model.evaluate(x_test,y_test,batch_size=1)
+loss,mae = model.evaluate(x_test,y_test,batch_size=16)
 print("loss : ",loss)
 print("mae : ",mae)
 
@@ -89,7 +79,6 @@ print("mae : ",mae)
 result = model.predict(x_pred)
 print("예측값 : ", result.T.reshape(10,)) #보기 쉽게
 print("실제값 : ", y_pred)
-
 y_predicted =  model.predict(x_test) #x_pred 10개밖에 없음응로 x_test 가지고 RMSE, R2 계산
 
 #RMSE
@@ -105,6 +94,7 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
+LSTM 모델
 loss :  3205.79638671875
 mae :  44.46400833129883
 예측값 :  [ 84.67883   68.966324 168.0709    66.70339  196.6143   191.96341
@@ -112,4 +102,13 @@ mae :  44.46400833129883
 실제값 :  [113.  90. 232.  55. 246. 202. 111. 281.  59. 121.]
 RMSE :  56.619756603559715
 R2 :  0.4726743055910535
+
+Conv1D 모델
+loss :  2594.342529296875
+mae :  40.9542121887207
+예측값 :  [236.53426  109.184044  75.73746  192.03503  149.2699   178.84619
+ 243.17163  137.77966  175.20113   84.063515]
+실제값 :  [281.  78.  59. 121. 129.  81. 268. 102. 144.  83.]       
+RMSE :  50.934691960021055
+R2 :  0.6046198559797608
 '''

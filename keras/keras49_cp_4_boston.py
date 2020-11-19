@@ -58,12 +58,6 @@ hist = model.fit(x_train,y_train,epochs=500,batch_size=1,verbose=2,callbacks=[es
 model.save('./save/model_boston.h5')
 model.save_weights('./save/weights_boston.h5')
 
-
-#4. 평가, 예측
-loss, acc = model.evaluate(x_test,y_test,batch_size=64)
-print("loss : ", loss)
-print("acc : ", acc)
-
 #4. 평가
 loss,mae = model.evaluate(x_test,y_test,batch_size=1)
 print("loss : ",loss)
