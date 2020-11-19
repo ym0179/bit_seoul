@@ -1,3 +1,5 @@
+# save, model, data폴더에 있는 파일들은 github에 push 안함
+# 용량 커서 터짐
 save/*
 model/*
 data/*
