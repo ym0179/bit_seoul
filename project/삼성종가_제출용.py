@@ -134,10 +134,8 @@ layer2_3 = Dropout(0.3)(layer2_2)
 layer2_4 = Conv1D(128, (2), padding="same")(layer2_3)
 layer2_5 = MaxPooling1D(pool_size=2)(layer2_4)
 layer2_6 = Dropout(0.3)(layer2_5)
-layer2_7 = Conv1D(64, (2), padding="same")(layer2_6)
-layer2_8 = Dropout(0.3)(layer2_7)
-layer2_9 = Flatten()(layer2_8)
-output2 = Dense(256, activation='relu')(layer2_9)
+layer2_7 = Flatten()(layer2_6)
+output2 = Dense(256, activation='relu')(layer2_7)
 
 
 ############### 모델 병합, concatenate ###################
@@ -167,7 +165,7 @@ es = EarlyStopping(monitor='val_loss',patience=50,mode='auto')
 modelpath = './model/samsung-{epoch:02d}-{val_loss:.4f}.hdf5'
 cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss',
                      save_best_only=True, mode='auto')
-model.fit([samsung_x_train,bit_x_train],samsung_y_train,epochs=1000,batch_size=8,verbose=2,
+model.fit([samsung_x_train,bit_x_train],samsung_y_train,epochs=1000,batch_size=1,verbose=2,
         callbacks=[es,cp], validation_split=0.2) 
 
 # 모델 불러오기
@@ -178,7 +176,7 @@ from tensorflow.keras.models import load_model
 #4. 평가
 loss,mae = model.evaluate([samsung_x_test,bit_x_test],
                         samsung_y_test,
-                        batch_size=8)
+                        batch_size=1)
 print("loss : ",loss)
 print("mae : ",mae)
 
