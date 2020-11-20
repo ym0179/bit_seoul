@@ -38,7 +38,7 @@ print(x.shape, y.shape) #(442, 10) (442,)
 #train-test split -> scaling train 만 하니까 젤 먼저 split
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state = 44)
-x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7, random_state = 44)
+x_train ,x_val, y_train, y_val = train_test_split(x_train, y_train, train_size=0.7, random_state = 44)
 
 #scaling - 2차원 input만 가능 -> reshape 나중에
 from sklearn.preprocessing import StandardScaler

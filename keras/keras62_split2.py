@@ -32,14 +32,11 @@ print(x.shape) #(150, 4)
 
 def split_x2(seq, size):
     aaa = []
-    bbb = []
     print("size :",size)
     for i in range(len(seq) - size + 1):
-        aaa.clear()
         subset = seq[i : (i+size)]
         aaa.append(subset)
-        bbb.append(np.array(aaa))
-    return np.array(bbb)
+    return np.array(aaa)
 
 dataset = split_x2(x, 5)
 print("===================")
