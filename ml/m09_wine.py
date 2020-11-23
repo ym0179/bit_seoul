@@ -3,7 +3,7 @@
 #다중분류문제
 
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_wine
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler #robust - 이상치 제거에 효과
 from sklearn.svm import LinearSVC, SVC
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
@@ -12,8 +12,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, r2_score
 
 # 1. 데이터
-x,y = load_iris(return_X_y=True)
-print(y)
+x,y = load_wine(return_X_y=True)
+# print(y)
 
 # train-test split
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=66, shuffle=True, train_size=0.8)
@@ -28,8 +28,8 @@ x_test = scaler.transform(x_test)
 # model = LinearSVC()
 # model = SVC()
 # model = KNeighborsClassifier()
-model = KNeighborsRegressor() #분류 문제 에러
-# model = RandomForestClassifier()
+# model = KNeighborsRegressor() #분류 문제 에러
+model = RandomForestClassifier()
 # model = RandomForestRegressor() #분류 문제 에러
 
 # 3. 훈련
@@ -49,20 +49,20 @@ print(y_test[:10], "의 예측 결과\n",y_predict[:10])
 
 ''' 모델별 결과
 LinearSVC()
-model.score :  0.9333333333333333
-acc :  0.9333333333333333
+model.score :  0.9722222222222222
+acc :  0.9722222222222222
 
 SVC()
-model.score :  0.9333333333333333
-acc :  0.9333333333333333
+model.score :  1.0
+acc :  1.0
 
 KNeighborsClassifier()
-model.score :  0.9
-acc :  0.9
+model.score :  1.0
+acc :  1.0
 
 RandomForestClassifier()
-model.score :  0.9666666666666667
-acc :  0.9666666666666667
+model.score :  1.0
+acc :  1.0
 
 KNeighborsRegressor()  #분류 문제 에러
 RandomForestRegressor()  #분류 문제 에러
