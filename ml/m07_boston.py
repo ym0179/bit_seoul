@@ -14,6 +14,12 @@ from sklearn.metrics import accuracy_score, r2_score
 # 1. 데이터
 x,y = load_boston(return_X_y=True)
 # print(y)
+dataset = load_boston()
+print(dataset['feature_names'])
+'''
+['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO'
+ 'B' 'LSTAT']
+'''
 
 # train-test split
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=66, shuffle=True, train_size=0.8)

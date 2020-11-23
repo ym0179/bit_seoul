@@ -14,6 +14,11 @@ from sklearn.metrics import accuracy_score, r2_score
 # 1. 데이터
 x,y = load_diabetes(return_X_y=True)
 # print(y)
+dataset = load_diabetes()
+print(dataset['feature_names'])
+'''
+['age', 'sex', 'bmi', 'bp', 's1', 's2', 's3', 's4', 's5', 's6']
+'''
 
 # train-test split
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=66, shuffle=True, train_size=0.8)

@@ -13,7 +13,12 @@ from sklearn.metrics import accuracy_score, r2_score
 
 # 1. 데이터
 x,y = load_iris(return_X_y=True)
-print(y)
+# print(y)
+dataset = load_iris()
+print(dataset['feature_names'])
+'''
+['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+'''
 
 # train-test split
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=66, shuffle=True, train_size=0.8)
@@ -28,8 +33,8 @@ x_test = scaler.transform(x_test)
 # model = LinearSVC()
 # model = SVC()
 # model = KNeighborsClassifier()
-model = KNeighborsRegressor() #분류 문제 에러
-# model = RandomForestClassifier()
+# model = KNeighborsRegressor() #분류 문제 에러
+model = RandomForestClassifier()
 # model = RandomForestRegressor() #분류 문제 에러
 
 # 3. 훈련
