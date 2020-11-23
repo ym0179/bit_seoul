@@ -31,6 +31,7 @@ print(sklearn.__version__) #0.22.1 버전에 문제 있어서 출력이 안됨 -
 '''
 pip uninstall scikit-learn
 pip install scikit-learn == 0.20.1
+=> 이제 안됨
 '''
 
 '''
