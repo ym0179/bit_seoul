@@ -16,6 +16,8 @@ x,y = load_breast_cancer(return_X_y=True)
 # print(y)
 dataset = load_breast_cancer()
 print(dataset['feature_names'])
+print(dataset.feature_names)
+print(dataset.target_names) #['malignant' 'benign']
 '''
 ['mean radius' 'mean texture' 'mean perimeter' 'mean area'
  'mean smoothness' 'mean compactness' 'mean concavity'

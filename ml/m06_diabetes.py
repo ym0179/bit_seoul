@@ -16,6 +16,7 @@ x,y = load_diabetes(return_X_y=True)
 # print(y)
 dataset = load_diabetes()
 print(dataset['feature_names'])
+print(dataset.feature_names)
 '''
 ['age', 'sex', 'bmi', 'bp', 's1', 's2', 's3', 's4', 's5', 's6']
 '''

@@ -16,6 +16,9 @@ x,y = load_iris(return_X_y=True)
 # print(y)
 dataset = load_iris()
 print(dataset['feature_names'])
+print(dataset.feature_names)
+print(dataset.target_names) #['setosa' 'versicolor' 'virginica']
+
 '''
 ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
 '''

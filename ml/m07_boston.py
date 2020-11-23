@@ -16,6 +16,7 @@ x,y = load_boston(return_X_y=True)
 # print(y)
 dataset = load_boston()
 print(dataset['feature_names'])
+print(dataset.feature_names)
 '''
 ['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO'
  'B' 'LSTAT']

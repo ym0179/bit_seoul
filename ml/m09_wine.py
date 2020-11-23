@@ -16,6 +16,8 @@ x,y = load_wine(return_X_y=True)
 dataset = load_wine()
 # print(y)
 print(dataset['feature_names'])
+print(dataset.feature_names)
+print(dataset.target_names) #['class_0' 'class_1' 'class_2']
 '''
 ['alcohol', 'malic_acid', 'ash', 'alcalinity_of_ash', 'magnesium', 'total_phenols', 'flavanoids', 
 'nonflavanoid_phenols', 'proanthocyanins', 'color_intensity', 'hue', 'od280/od315_of_diluted_wines', 'proline']
