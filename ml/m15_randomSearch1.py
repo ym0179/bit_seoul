@@ -7,10 +7,7 @@
 # 그리드 서치는 우리가 딕셔너리에 지정한 모든 값을 다 탐색해야만 함
 # 불필요한 탐색 횟수를 줄임
 # random Search는 중요한 hyper-parameter를 더 많이 탐색
-
-# Fitting 5 folds for each of 20 candidates, totalling 100 fits
-# Fitting 5 folds for each of 10 candidates, totalling 50 fits
-# random search가 grid search의 50%인듯??
+# Random Search는 정해진 범위에서 난수를 생성해 최적의 hyper-parameter를 찾음
 
 import pandas as pd
 from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV, RandomizedSearchCV
