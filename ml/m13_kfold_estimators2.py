@@ -19,10 +19,11 @@ allAlgorithms = all_estimators(type_filter='regressor') #리그레서 모든 모
 
 for (name, algorithm) in allAlgorithms: #모든 모델들의 알고리즘
     try:
-        kfold = KFold(n_splits=5, shuffle=True)
+        kfold = KFold(n_splits=7, shuffle=True)
         model = algorithm()
         scores = cross_val_score(model, x_train, y_train, cv=kfold)
-        print(name,' : ',scores)
+        print(name,' : ',scores, " / ", scores.mean())
+        # print(name,' : ',scores)
         # model.fit(x_train,y_train)
         # y_pred =  model.predict(x_test)
         # print(name, '의 정답률 : ', r2_score(y_test,y_pred))
