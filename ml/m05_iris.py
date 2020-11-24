@@ -36,8 +36,8 @@ x_test = scaler.transform(x_test)
 # model = LinearSVC()
 # model = SVC()
 # model = KNeighborsClassifier()
-# model = KNeighborsRegressor() #분류 문제 에러
-model = RandomForestClassifier()
+model = KNeighborsRegressor() #분류 문제 에러
+# model = RandomForestClassifier()
 # model = RandomForestRegressor() #분류 문제 에러
 
 # 3. 훈련

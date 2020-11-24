@@ -8,6 +8,8 @@
 - 두 클래스의 가운데 선을 그어주게 되고, 가장 가까이 있는 점들과의 거리가 가장 큰 직선을 찾음
 - 이때 가장 가까이 있는 점들을 Support Vector 라고 하고, 찾은 직선과 서포트벡터 사이의 거리를 최대 마진(margin) 이라 함
 - 마진을 최대로 하는 서포트벡터와 직선을 찾는 것이 목표
+- SVC는 SVM에서 끝문자인 M를 Classification의 첫문자인 C로 바꿔서 사용한 것
+- Regression용 알고리즘인 SVR 존재
 '''
 
 import numpy as np
