@@ -1,11 +1,11 @@
 #Day12
 #2020-11-24
 
-# Gradient Boost
-# boosting 계열의 앙상블 알고리즘 - 단순하고 약한 학습기(Weak Learner)를 결합하고 틀린 것에 가중치를 부여해서 보다 정확하고 강력한 학습기(Strong Learner)를 만드는 방식
+# Gradient Boost : Boosting 계열의 앙상블 알고리즘 (배깅의 대표적인 모델은 랜덤 포레스트)
+# 단순하고 약한 학습기(Weak Learner)를 결합하고 틀린 것에 가중치를 부여해 정확하고 강력한 학습기(Strong Learner)를 만드는 방식
 # 정확도가 낮더라도 일단 모델을 만들고, 드러난 약점(예측 오류)은 두 번째 모델이 보완 (남아 있는 문제(오차)를 다음 모델에서 보완하여 계속 더하는 과정을 반복)
-# 배깅의 대표적인 모델은 랜덤 포레스트
-# 가중치를 부여하는 방식이 Gradient Descent
+# 가중치를 부여하는 방식이 Gradient Descent (경사하강법) -> Gradient가 현재까지 학습된 모델의 약점(weakness)을 알려주고,
+# 모델이 그것을 중점으로 해서 보완을 하는 방식
 
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -51,3 +51,17 @@ def plot_feature_importances_cancer(model):
 
 plot_feature_importances_cancer(model)
 plt.show()
+
+'''
+Ensemble은 방식에 따라서 Bagging과 Boosting 으로 분류
+1) Bagging
+- 여러 모델을 사용할때, 각 모델에서 나온 값을 계산하여, 최종 결과값을 내는 방식
+- 합산 (또는 평균등 여러가지 방법이 있음)해서, 최종 결과를 취함
+- 데이터를 넣을때는 원본 데이타 x에서 매번 다시 샘플링을 해서 다른 샘플 데이터를 각각 모델에 넣음
+
+2) Boosting
+- 먼저 m1~3 모델이 있을때, m1에는 x에서 샘플링된 데이터를 넣음
+- 나온 결과중에서, 예측이 잘못된 x중의 값들에 가중치를 반영해서 다음 모델인 m2에 넣는 방식
+- 각 모델의 성능이 다르기 때문에, 각 모델에 가중치 W를 반영
+
+'''
