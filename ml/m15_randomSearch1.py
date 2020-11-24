@@ -1,8 +1,19 @@
 #Day12
 #2020-11-24
 
+# 랜덤 서치 random search
+# 그리드 서치는 말그대로 모든 경우를 테이블로 만든뒤 격자로 탐색하는 방식에 해당한다면,
+# 랜덤 서치는 하이퍼 파라미터 값을 랜덤하게 넣어보고 그중 우수한 값을 보인 하이퍼 파라미터를 활용해 모델을 생성
+# 그리드 서치는 우리가 딕셔너리에 지정한 모든 값을 다 탐색해야만 함
+# 불필요한 탐색 횟수를 줄임
+# random Search는 중요한 hyper-parameter를 더 많이 탐색
+
+# Fitting 5 folds for each of 20 candidates, totalling 100 fits
+# Fitting 5 folds for each of 10 candidates, totalling 50 fits
+# random search가 grid search의 50%인듯??
+
 import pandas as pd
-from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score
 import warnings
 from sklearn.svm import LinearSVC, SVC
@@ -31,10 +42,7 @@ params = [
     {'C': [1,10,100,1000], 'kernel':['sigmoid'], 'gamma':[0.001, 0.0001]}
 ]
 
-# GridSearch 하이퍼파라미터 자동으로 찾기
-# 리스트로 지정된 여러 하이퍼파라미터 값을 받아 모든 조합에 대해 모델 성능을 평가하여 최적의 하이퍼파라미터 조합을 찾음
-model = GridSearchCV(SVC(), params, cv=kfold)
-# model = SVC()
+model = RandomizedSearchCV(SVC(), params, cv=kfold)
 
 
 # 3. 훈련
@@ -47,7 +55,7 @@ print("최적의 매개변수 : ", model.best_estimator_)
 y_predict = model.predict(x_test)
 print("최종정답률 : ", accuracy_score(y_test,y_predict))
 
-# 최적의 매개변수 :  SVC(C=1, kernel='linear')
+# 최적의 매개변수 :  SVC(C=1000, gamma=0.0001)
 # 최종정답률 :  1.0
 
 '''
