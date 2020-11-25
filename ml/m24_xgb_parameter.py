@@ -12,7 +12,8 @@ from sklearn.model_selection import train_test_split
 
 
 x,y = load_boston(return_X_y=True)
-x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state=44)
 
 n_estimators = 300
 learning_rate = 1
@@ -34,13 +35,20 @@ model = XGBRegressor(max_depth=max_depth,                   # 트리의 최대 �
 
 model.fit(x_train,y_train)
 
-acc = model.score(x_test,y_test)
-print("acc : ", acc)
+r2 = model.score(x_test,y_test)
+print("r2 : ", r2)
+
+print(model.feature_importances_)
+
+# 그래프 그리기
+import matplotlib.pyplot as plt
+plot_importance(model)
+plt.show()
 
 '''
 without parameter setting
-acc :  0.8225876771587038
+r2 :  0.9008377263939266
 
 with parameter
-acc :  0.8963659312372875
+r2 :  0.822967390045149
 '''

@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 
 x,y = load_diabetes(return_X_y=True)
 
-# x = x[:,[1,2,3,5,6,7,8,9]]
+x = x[:,[1,2,3,5,6,7,8,9]]
 
 # train-test split
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=66, shuffle=True, train_size=0.8)

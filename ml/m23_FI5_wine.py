@@ -20,8 +20,7 @@ wine = pd.read_csv('./data/csv/winequality-white.csv', header=0, index_col=None,
 #x,y 값 나누기
 y = wine['quality']
 x = wine.drop('quality',axis=1)
-
-# x = x.drop(x.columns[[0,4,8]], axis=1)
+x = x.drop(x.columns[[0,4,8]], axis=1)
 # print(x)
 
 # train-test split

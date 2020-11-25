@@ -10,9 +10,12 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from xgboost import XGBClassifier, XGBRegressor
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
-
+import pandas as pd
 x,y = load_boston(return_X_y=True)
 
+# df = pd.DataFrame(x)
+# print(load_boston().feature_names)
+# print(df.columns)
 x = x[:,[0,2,4,5,6,7,8,9,10,11,12]]
 
 # train-test split
