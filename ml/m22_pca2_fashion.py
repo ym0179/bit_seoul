@@ -3,8 +3,8 @@
 
 # pca로 축소해서 모델을 완성하시오
 # 1. 0.95이상
-# 2. 1이상
-# mnist dnn과 loss/acc 비교
+# 2. 0.99이상
+# dnn과 loss/acc 비교
 
 import numpy as np
 from tensorflow.keras.datasets import fashion_mnist
@@ -13,7 +13,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
-
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 # print(x_train.shape, x_test.shape) #(60000, 28, 28) (10000, 28, 28)
@@ -25,15 +25,12 @@ x = np.append(x_train, x_test, axis=0)
 x = x.reshape(-1, 28*28) #reshape(-1, 정수)
 # print(x.shape) #(60000, 784)
 
-# PCA
-pca = PCA()
-pca.fit(x)
-cumsum = np.cumsum(pca.explained_variance_ratio_)
-# print(cumsum)
-d = np.argmax(cumsum >= 1) + 1
-print('선택할 차원 수 :', d)
+#scaling
+scaler = StandardScaler()
+x = scaler.fit_transform(x) 
 
-pca = PCA(n_components=d) #데이터셋에 분산의 95%만 유지하도록 PCA를 적용
+# PCA
+pca = PCA(n_components=0.95) #데이터셋에 분산의 95%만 유지하도록 PCA를 적용
 x = pca.fit_transform(x)
 print('선택한 차원(픽셀) 수 :', pca.n_components_)
 
@@ -48,8 +45,11 @@ print(x_test.shape)
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
-x_train = x_train.astype('float32')/255.
-x_test = x_test.astype('float32')/255.
+#scaling
+# scaler = StandardScaler()
+# scaler.fit(x_train) #fit은 train data만 함
+# x_train = scaler.transform(x_train)
+# x_test = scaler.transform(x_test)
 
 #predict 만들기
 x_pred = x_test[-10:]
@@ -83,15 +83,31 @@ print("예측값 : ", y_predicted)
 print("실제값 : ", y_pred_recovery)
 
 '''
-DNN without PCA
+DNN without PCA **********
 loss :  0.8847358226776123
 acc :  0.8852999806404114
+===========================================================================
+PCA 0.95 : 784 -> 188로 차원 축소 (PCA 후에 Standard Scaler)
+loss :  1.2857699394226074
+acc :  0.8586999773979187
 
-PCA 0.95 : 784 -> 188로 차원 축소
-loss :  1.2031461000442505
+PCA 0.95 : 784 -> 256로 차원 축소 (PCA 전, 후에 Standard Scaler)
+loss :  1.2820942401885986
+acc :  0.859000027179718
+
+PCA 0.99 : 784 -> 527로 차원 축소 (PCA 전에 Standard Scaler)
+loss :  1.411585807800293
+acc :  0.8708000183105469
+===========================================================================
+PCA 0.99 : 784 -> 459로 차원 축소 (PCA 후에 Standard Scaler)
+loss :  1.600558876991272
+acc :  0.8508999943733215
+
+PCA 0.99 : 784 -> 527로 차원 축소 (PCA 전, 후에 Standard Scaler)
+loss :  1.5600082874298096
+acc :  0.8514999747276306
+
+PCA 0.99 : 784 -> 527로 차원 축소 (PCA 전에 Standard Scaler)
+loss :  1.1956037282943726
 acc :  0.8740000128746033
-
-PCA 1.0 : 784 -> 784로 변함없음
-loss :  1.3111492395401
-acc :  0.866100013256073
 '''

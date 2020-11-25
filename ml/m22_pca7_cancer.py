@@ -21,6 +21,10 @@ x = dataset.data
 y = dataset.target
 # print(x.shape, y.shape) #(569, 30) (569,)
 
+#scaling
+scaler = StandardScaler()
+x = scaler.fit_transform(x) 
+
 # PCA
 pca = PCA(n_components=0.95) #데이터셋에 분산의 n%만 유지하도록 PCA를 적용
 x = pca.fit_transform(x)
@@ -31,11 +35,11 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
 x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7)
 
 #scaling
-scaler = StandardScaler()
-scaler.fit(x_train) #fit은 train data만 함
-x_train = scaler.transform(x_train)
-x_val = scaler.transform(x_val)
-x_test = scaler.transform(x_test)
+# scaler = StandardScaler()
+# scaler.fit(x_train) #fit은 train data만 함
+# x_train = scaler.transform(x_train)
+# x_val = scaler.transform(x_val)
+# x_test = scaler.transform(x_test)
 
 #pred 만들기
 x_pred = x_test[:10]
@@ -75,12 +79,28 @@ print("실제값 : ", y_pred)
 DNN without PCA
 loss :  0.5096859931945801
 acc :  0.9824561476707458
-
-PCA 0.95 : 30 -> 1로 차원 축소
+===========================================================
+PCA 0.95 : 30 -> 1로 차원 축소 (PCA 후에 Standard Scaler)
 loss :  0.21957197785377502
 acc :  0.9213836193084717
 
-PCA 0.99 : 30 -> 2로 차원 축소
+PCA 0.95 : 30 -> 10로 차원 축소 (PCA 전, 후에 Standard Scaler) *************
+loss :  1.045854060066631e-05
+acc :  1.0
+
+PCA 0.95 : 30 -> 10로 차원 축소 (PCA 전에 Standard Scaler)
+loss :  4.862642555281127e-08
+acc :  1.0
+===========================================================
+PCA 0.99 : 30 -> 2로 차원 축소 (PCA 후에 Standard Scaler)
 loss :  0.11446408182382584
 acc :  0.9496855139732361
+
+PCA 0.99 : 30 -> 17로 차원 축소 (PCA 전, 후에 Standard Scaler)
+loss :  1.398896893078927e-05
+acc :  1.0
+
+PCA 0.99 : 30 -> 17로 차원 축소 (PCA 전에 Standard Scaler)
+loss :  2.2500530576508027e-06
+acc :  1.0
 '''

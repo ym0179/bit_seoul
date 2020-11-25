@@ -22,8 +22,12 @@ x = dataset.data
 y = dataset.target
 # print(x.shape, y.shape) #(506, 13) (506,)
 
+#scaling
+scaler = StandardScaler()
+x = scaler.fit_transform(x) 
+
 # PCA
-pca = PCA(n_components=0.95) #데이터셋에 분산의 n%만 유지하도록 PCA를 적용
+pca = PCA(n_components=0.99) #데이터셋에 분산의 n%만 유지하도록 PCA를 적용
 x = pca.fit_transform(x)
 print('선택한 차원(픽셀) 수 :', pca.n_components_)
 
@@ -87,22 +91,45 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-DNN without PCA
+DNN without PCA *****************
 loss :  1523.615478515625
 mae :  27.910646438598633
 RMSE :  39.03351252066182
 R2 :  0.7501489989808323
-
-PCA 0.95 : 13 -> 8로 차원 축소
+======================================
+PCA 0.95 : 13 -> 8로 차원 축소  (PCA 후에 Standard Scaler)
 loss :  1717.641357421875
 mae :  31.407352447509766
 RMSE :  41.44443601238127
 R2 :  0.7183314917390959
 
+PCA 0.95 : 13 -> 8로 차원 축소  (PCA 전에 Standard Scaler)
+loss :  2093.39208984375
+mae :  33.202457427978516
+RMSE :  45.7535965156383
+R2 :  0.6567138344732151
 
-PCA 0.99 : 13 ->8로 차원 축소
+PCA 0.95 : 13 -> 8로 차원 축소  (PCA 전, 후에 Standard Scaler)
+loss :  1577.7542724609375
+mae :  29.595245361328125
+RMSE :  39.720950165109734
+R2 :  0.7412710159791638
+=======================================
+PCA 0.99 : 13 ->8로 차원 축소  (PCA 후에 Standard Scaler)
 loss :  1998.182373046875
 mae :  33.25697326660156
 RMSE :  44.701029686482464
 R2 :  0.6723268319102942
+
+PCA 0.99 : 13 -> 8로 차원 축소  (PCA 전에 Standard Scaler)
+loss :  2641.191162109375
+mae :  40.25009536743164
+RMSE :  51.39253218499593
+R2 :  0.5668823732085401
+
+PCA 0.99 : 13 -> 8로 차원 축소  (PCA 전, 후에 Standard Scaler)
+loss :  1753.57666015625
+mae :  30.098604202270508
+RMSE :  41.87573018192887
+R2 :  0.7124385853745272
 '''

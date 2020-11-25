@@ -28,9 +28,6 @@ y = dataset.target
 # print(x)
 # print(x.shape, y.shape) #(442, 10) (442,)
 
-x_pred = x[:10]
-y_pred = y[:10]
-
 
 #1. 전처리
 #train-test split
@@ -47,11 +44,12 @@ x_val = scaler.transform(x_val)
 x_test = scaler.transform(x_test)
 
 #reshape
-x_train = x_train.reshape(x_train.shape[0],x_train.shape[1],1)
-x_val = x_val.reshape(x_val.shape[0],x_val.shape[1],1)
-x_test = x_test.reshape(x_test.shape[0],x_test.shape[1],1)
-x_pred = x_pred.reshape(10,10,1,1)
+x_train = x_train.reshape(x_train.shape[0],x_train.shape[1],1,1)
+x_val = x_val.reshape(x_val.shape[0],x_val.shape[1],1,1)
+x_test = x_test.reshape(x_test.shape[0],x_test.shape[1],1,1)
 
+x_pred = x_test[:10]
+y_pred = y_test[:10]
 
 #2. 모델링
 from tensorflow.keras.models import Sequential
@@ -111,5 +109,8 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
-
+loss :  727.0397338867188
+mae :  21.241779327392578
+RMSE :  26.96366919257311
+R2 :  0.8822665454773094
 '''

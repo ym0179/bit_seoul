@@ -36,15 +36,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
 model.add(Dense(128, activation='relu', input_shape=(x_train.shape[1],)) )
-model.add(Dropout(0.3))
-# model.add(Dense(512, activation='relu') )
-# model.add(Dropout(0.3))
 model.add(Dense(256, activation='relu') )
-model.add(Dropout(0.3))
 model.add(Dense(128, activation='relu') )
-model.add(Dropout(0.3))
-model.add(Dense(128, activation='relu') )
-model.add(Dropout(0.3))
+model.add(Dense(64, activation='relu') )
 model.add(Dense(100, activation='softmax') )
 
 
@@ -69,5 +63,8 @@ y_pred_recovery = np.argmax(y_pred, axis=1) #원핫인코딩 원복
 print("예측값 : ", y_predicted)
 print("실제값 : ", y_pred_recovery)
 '''
-
+loss :  3.5389809608459473
+acc :  0.20890000462532043
+예측값 :  [71 74 15 11 70 43 97  7 71 40 28 32 81 56 28 88 40 97 70 70]
+실제값 :  [49 33 72 51 71 92 15 14 23  0 71 75 81 69 40 43 92 97 70 53]
 '''

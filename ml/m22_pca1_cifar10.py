@@ -3,8 +3,8 @@
 
 # pca로 축소해서 모델을 완성하시오
 # 1. 0.95이상
-# 2. 1이상
-# mnist dnn과 loss/acc 비교
+# 2. 0.99이상
+# dnn과 loss/acc 비교
 
 import numpy as np
 from tensorflow.keras.datasets import cifar10
@@ -28,10 +28,10 @@ x = x.reshape(-1, 32*32*3) #reshape(-1, 정수)
 
 #scaling
 scaler = StandardScaler()
-scaler.fit_transform(x) 
+x = scaler.fit_transform(x) 
 
 # PCA
-pca = PCA(n_components=0.95) #데이터셋에 분산의 95%만 유지하도록 PCA를 적용
+pca = PCA(n_components=0.99) #데이터셋에 분산의 95%만 유지하도록 PCA를 적용
 x = pca.fit_transform(x)
 print('선택한 차원(픽셀) 수 :', pca.n_components_)
 
@@ -47,10 +47,10 @@ y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
 #scaling
-scaler = StandardScaler()
-scaler.fit(x_train) #fit은 train data만 함
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test)
+# scaler = StandardScaler()
+# scaler.fit(x_train) #fit은 train data만 함
+# x_train = scaler.transform(x_train)
+# x_test = scaler.transform(x_test)
 
 #predict 만들기
 x_pred = x_test[-10:]
@@ -92,18 +92,28 @@ print("실제값 : ", y_pred_recovery)
 DNN without PCA
 loss :  2.0349631309509277
 acc :  0.4302999973297119
-
-PCA 0.95 : 3072 -> 217로 차원 축소
+===============================================================
+PCA 0.95 : 3072 -> 217로 차원 축소 (PCA 후에 Standard Scaler
 loss :  1.4575376510620117
-acc :  0.4677000045776367 (Standard Scaler)
+acc :  0.4677000045776367
 
-loss :  1.4681386947631836
-acc :  0.4731999933719635 (PCA 전, 후에 Standard Scaler)
+PCA 0.95 : 3072 -> 221로 차원 축소 (PCA 전, 후에 Standard Scaler)
+loss :  1.4540990591049194
+acc :  0.47440001368522644
 
-PCA 0.99 : 3072 -> 660로 차원 축소
+PCA 0.95 : 3072 -> 221로 차원 축소 (PCA 전에 Standard Scaler) ************
+loss :  1.4311307668685913
+acc :  0.4893999993801117
+===============================================================
+PCA 0.99 : 3072 -> 660로 차원 축소 (PCA 후에 Standard Scaler
 loss :  1.6835248470306396
-acc :  0.41029998660087585 (Standard Scaler)
+acc :  0.41029998660087585
 
-loss :  1.700701355934143
-acc :  0.4122999906539917 (PCA 전, 후에 Standard Scaler)
+PCA 0.99 : 3072 -> 664로 차원 축소 (PCA 전, 후에 Standard Scaler)
+loss :  1.799400806427002
+acc :  0.41290000081062317
+
+PCA 0.99 : 3072 -> 664로 차원 축소 (PCA 전에 Standard Scaler)
+loss :  1.5768656730651855
+acc :  0.45989999175071716
 '''
