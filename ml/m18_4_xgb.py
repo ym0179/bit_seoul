@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 
 x,y = load_breast_cancer(return_X_y=True)
 cancer = load_breast_cancer()
+print(cancer)
 
 # train-test split
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=66, shuffle=True, train_size=0.8)
@@ -25,6 +26,7 @@ acc = model.score(x_test,y_test)
 print("acc : ", acc) #acc :  0.9210526315789473
 
 print(model.feature_importances_)
+
 '''
  acc :  0.9736842105263158
 [0.         0.03518598 0.00053468 0.02371635 0.00661651 0.02328466        

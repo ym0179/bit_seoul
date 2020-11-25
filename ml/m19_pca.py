@@ -26,7 +26,7 @@ x = datasets.data
 y = datasets.target
 print(x.shape, y.shape) #(442, 10) (442,)
 
-pca = PCA(7) #축소 후 칼럼의 개수
+pca = PCA(n_components=7) #축소 후 칼럼의 개수
 x2d = pca.fit_transform(x)
 print(x2d.shape) #(442, 7)
 

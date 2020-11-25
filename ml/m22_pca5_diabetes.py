@@ -1,61 +1,51 @@
-#Day7
-#2020-11-17
+#Day13
+#2020-11-25
 
-#당뇨병 진행도 예측 모델 학습 (sklearn 라이브러리)
-'''
-[x]
-442 행 10 열 
-Age
-Sex
-Body mass index
-Average blood pressure
-S1
-S2
-S3
-S4
-S5
-S6
+# pca로 축소해서 모델을 완성하시오
+# 1. 0.95이상
+# 2. 0.99이상
+# dnn과 loss/acc 비교
 
-[y]
-442 행 1 열 
-target: a quantitative measure of disease progression one year after baseline
-'''
-
+import numpy as np
 from sklearn.datasets import load_diabetes
+from sklearn.decomposition import PCA
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+
 dataset = load_diabetes()
 x = dataset.data
 y = dataset.target
-print(x)
-print(x.shape, y.shape) #(442, 10) (442,)
-# print(dataset)
+# print(x.shape, y.shape) #(506, 13) (506,)
 
-# from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
-# scaler = StandardScaler()
-# scaler.fit(x) # fit하고
-# x = scaler.transform(x) # 사용할 수 있게 바꿔서 저장하자
+# PCA
+pca = PCA(n_components=0.95) #데이터셋에 분산의 n%만 유지하도록 PCA를 적용
+x = pca.fit_transform(x)
+print('선택한 차원(픽셀) 수 :', pca.n_components_)
 
-#1. 전처리
-#train-test split -> scaling train 만 하니까 젤 먼저 split
-from sklearn.model_selection import train_test_split
+#train test 나누기
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state=44)
 x_test ,x_val, y_test, y_val = train_test_split(x_train, y_train, train_size=0.7, random_state=44)
 
-#scaling - 2차원 input만 가능 -> reshape 나중에
-from sklearn.preprocessing import StandardScaler
+#scaling
 scaler = StandardScaler()
 scaler.fit(x_train) #fit은 train data만 함
 x_train = scaler.transform(x_train)
 x_val = scaler.transform(x_val)
 x_test = scaler.transform(x_test)
 
+#pred 만들기
 x_pred = x_test[:10]
 y_pred = y_test[:10]
 
-#2. 모델링
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+
+#2. 모델
 model = Sequential()
-model.add(Dense(64, activation='relu',input_shape=(10,)))
+model.add(Dense(64, activation='relu',input_shape=(pca.n_components_,)))
 model.add(Dropout(0.3))
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.3))
@@ -65,30 +55,19 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.3))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dropout(0.2))
 model.add(Dense(1))
-
-# model.add(Dense(64, activation='relu', input_shape=(x_train.shape[1],) ))
-# model.add(Dense(256, activation='relu'))
-# model.add(Dense(128, activation='relu'))
-# model.add(Dense(64, activation='relu'))
-# model.add(Dense(1))
-
 
 #3. 컴파일, 훈련
 model.compile(loss="mse", optimizer="adam", metrics=["mae"])
 
-from tensorflow.keras.callbacks import EarlyStopping
 es = EarlyStopping(monitor='val_loss',patience=70,mode='auto')
 model.fit(x_train,y_train,epochs=500,batch_size=1,verbose=2,callbacks=[es],validation_split=0.3) 
 
-#4. 평가
+#4. 평가, 예측
 loss,mae = model.evaluate(x_test,y_test,batch_size=1)
 print("loss : ",loss)
 print("mae : ",mae)
 
-#5. 예측
 result = model.predict(x_pred)
 print("예측값 : ", result.T.reshape(10,)) #보기 쉽게
 print("실제값 : ", y_pred)
@@ -108,11 +87,22 @@ r2 = r2_score(y_test, y_predicted)
 print("R2 : ",r2) # max 값: 1
 
 '''
+DNN without PCA
 loss :  1523.615478515625
 mae :  27.910646438598633
-예측값 :  [276.99197  86.52612  85.019   241.14664  93.08905 187.51292  92.57475
- 103.67481 211.50293 134.3665 ]
-실제값 :  [277.  77.  94. 248.  55. 235.  89. 127.  90.  63.]
 RMSE :  39.03351252066182
 R2 :  0.7501489989808323
+
+PCA 0.95 : 13 -> 8로 차원 축소
+loss :  1717.641357421875
+mae :  31.407352447509766
+RMSE :  41.44443601238127
+R2 :  0.7183314917390959
+
+
+PCA 0.99 : 13 ->8로 차원 축소
+loss :  1998.182373046875
+mae :  33.25697326660156
+RMSE :  44.701029686482464
+R2 :  0.6723268319102942
 '''

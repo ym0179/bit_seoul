@@ -30,12 +30,16 @@ y_pred = y_test[:10]
 
 #2. 모델
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
 model.add(Dense(64, activation='relu',input_shape=(32*32*3,)))
+model.add(Dropout(0.3))
 model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.3))
 model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.3))
 model.add(Dense(32, activation='relu'))
+model.add(Dropout(0.3))
 model.add(Dense(10, activation='softmax'))
 
 
@@ -44,8 +48,8 @@ model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["acc"]
 #다중분류에서는 loss가 categorical crossentropy
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(patience=3,mode='auto',monitor='loss')
-model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=1, validation_split=0.3, callbacks=[es])
+es = EarlyStopping(patience=10,mode='auto',monitor='loss')
+model.fit(x_train, y_train, epochs=500, batch_size=64, verbose=1, validation_split=0.3, callbacks=[es])
 
 #4. 평가, 예측
 loss, acc = model.evaluate(x_test,y_test,batch_size=64)
