@@ -23,8 +23,8 @@ y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 print(y_train.shape, y_test.shape) # (50000, 100) (10000, 100)
 
-x_train = x_train.reshape(50000, 32*32*3).astype('float32')/255. #minmax scaling
-x_test = x_test.reshape(10000, 32*32*3).astype('float32')/255.
+x_train = x_train.reshape(50000,32*32*3).astype('float32')/255. #minmax scaling
+x_test = x_test.reshape(10000,32*32*3).astype('float32')/255.
 
 #predict 만들기
 x_pred = x_test[:20]
@@ -35,10 +35,10 @@ y_pred = y_test[:20]
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 model = Sequential()
-model.add(Dense(128, activation='relu') )
+model.add(Dense(128, activation='relu', input_shape=(x_train.shape[1],)) )
 model.add(Dropout(0.3))
-model.add(Dense(512, activation='relu', input_shape=(x_train.shape[1],) ))
-model.add(Dropout(0.3))
+# model.add(Dense(512, activation='relu') )
+# model.add(Dropout(0.3))
 model.add(Dense(256, activation='relu') )
 model.add(Dropout(0.3))
 model.add(Dense(128, activation='relu') )
@@ -53,11 +53,11 @@ model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["acc"]
 #다중분류에서는 loss가 categorical crossentropy
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(patience=50,mode='auto',monitor='val_loss')
-model.fit(x_train, y_train, epochs=1000, batch_size=32, verbose=2, validation_split=0.2, callbacks=[es])
+es = EarlyStopping(patience=20,mode='auto',monitor='val_loss')
+model.fit(x_train, y_train, epochs=1000, batch_size=64, verbose=2, validation_split=0.2, callbacks=[es])
 
 #4. 평가, 예측
-loss, acc = model.evaluate(x_test,y_test,batch_size=32)
+loss, acc = model.evaluate(x_test,y_test,batch_size=64)
 print("loss : ", loss)
 print("acc : ", acc)
 
