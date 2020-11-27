@@ -161,40 +161,12 @@ for i in num_cols:
 # np.set_printoptions(threshold=np.inf)
 # print(all_data.columns.tolist())
 
-def PCA_change(df, cols, n_components, prefix='PCA_'):
-    pca = PCA(n_components=n_components, random_state=77)
-    pc = pca.fit_transform(df[cols])
-    print('원래 차원(픽셀) 수 :', len(cols))
-    print('선택한 차원(픽셀) 수 :', pca.n_components_)
-
-    pc_df = pd.DataFrame(pc) #pca 된 컬럼들 df
-    pc_df.rename(columns=lambda x: str(prefix)+str(x), inplace=True) #pca 된 컬럼들 이름 바꾸기
-
-    df = df.drop(cols, axis=1) #pca할 컬럼들 원래 df에서 드롭
-    print("새로운 df shape : ", df.shape)
-    print(df)
-    print("pc_df shape : ", pc_df.shape)
-    print(pc_df)
-    new_df = pd.concat([df,pc_df], axis=1, ignore_index=True) #원래 df에 pca된 컬럼들 합치기
-    print("새로운 df shape : ",new_df.shape)
-    return new_df
-
-print(all_data.columns.get_loc("V1")) #45
-print(all_data.columns.get_loc("V321")) #336
-v_cols = all_data.columns[45:337]
-print("V columns : ", v_cols)
-
-all_data2 = PCA_change(all_data, v_cols, n_components=0.95, prefix='PCA_V_')
-print("원래 데이터 shape : ", all_data.shape)
-print("PCA한 데이터 shape : ", all_data2.shape)
-print(all_data2)
-
-# train2_x = all_data[:len(x_train)]
-# train2_y = y_train
-# test2 = all_data[len(x_train):]
-# print("train : ",train2_x.shape) #(590540, 367)
-# print("test: ",test2.shape) #(506691, 367)
-# print("train_y: ",train2_y.shape) #(590540,)
+train2_x = all_data[:len(x_train)]
+train2_y = y_train
+test2 = all_data[len(x_train):]
+print("train : ",train2_x.shape) #(590540, 367)
+print("test: ",test2.shape) #(506691, 367)
+print("train_y: ",train2_y.shape) #(590540,)
 
 #npy 저장
 # x_train = train2_x.to_numpy()
@@ -203,4 +175,70 @@ print(all_data2)
 # np.save('./data/project1/x_train.npy', arr=x_train)
 # np.save('./data/project1/y_train.npy', arr=y_train)
 # np.save('./data/project1/x_test.npy', arr=x_test)
+
+# Vxxx 컬럼 PCA 적용하기! 292개의 컬럼 -> pca 0.9나 0.99 (누적된 분산의 비율이 95%, 99%가 되는 주성분 축, 차원을 선택)
+def PCA_change(df, cols, n_components, prefix='PCA_'):
+    pca = PCA(n_components=n_components, random_state=77)
+    pc = pca.fit_transform(df[cols])
+    print('원래 차원(픽셀) 수 :', len(cols)) #292 컬럼
+    print('선택한 차원(픽셀) 수 :', pca.n_components_) #0.95: 4 컬럼 / 0.99: 8컬럼
+
+    pc_df = pd.DataFrame(pc, index=df.index) #pca 된 컬럼들 df
+    pc_df.rename(columns=lambda x: str(prefix)+str(x), inplace=True) #pca 된 컬럼들 이름 바꾸기
+
+    df = df.drop(cols, axis=1) #pca할 컬럼들 원래 df에서 드롭
+    print("dropped df shape : ", df.shape)
+    # print(df)
+    print("pc_df shape : ", pc_df.shape)
+    # print(pc_df)
+    new_df = pd.concat([df,pc_df], axis=1) #원래 df에 pca된 컬럼들 합치기
+    # print("concated df shape : ",new_df.shape)
+    return new_df
+
+# print(all_data.columns.get_loc("V1")) #45
+# print(all_data.columns.get_loc("V321")) #336
+v_cols = all_data.columns[45:337]
+# print("V columns : ", v_cols)
+
+# PCA 95%
+all_data2 = PCA_change(all_data, v_cols, n_components=0.95, prefix='PCA_V_')
+print("원래 데이터 shape : ", all_data.shape) #원래 데이터 shape :  (1097231, 367)
+print("PCA(0.95) 데이터 shape : ", all_data2.shape) #PCA(0.95) 데이터 shape :  (1097231, 79)
+
+# PCA 99%
+all_data3 = PCA_change(all_data, v_cols, n_components=0.99, prefix='PCA_V_')
+print("원래 데이터 shape : ", all_data.shape) #원래 데이터 shape :  (1097231, 367)
+print("PCA(0.99) 데이터 shape : ", all_data3.shape) #PCA(0.99) 데이터 shape :  (1097231, 83)
+
+# train test 다시 나눠주기
+# PCA 95%
+train3_x = all_data2[:len(x_train)]
+train3_y = y_train
+test3 = all_data2[len(x_train):]
+print("train : ",train3_x.shape) #(590540, 79)
+print("test: ",test3.shape) #(506691, 79)
+print("train_y: ",train3_y.shape) #(590540,)
+
+# PCA 99%
+train4_x = all_data3[:len(x_train)]
+train4_y = y_train
+test4 = all_data3[len(x_train):]
+print("train : ",train4_x.shape) #(590540, 83)
+print("test: ",test4.shape) #(506691, 83)
+print("train_y: ",train4_y.shape) #(590540,)
+
+#npy 저장
+x_train_95 = train3_x.to_numpy()
+y_train_95 = train3_y.to_numpy()
+x_test_95 = test3.to_numpy()
+np.save('./data/project1/x_train_95.npy', arr=x_train_95)
+np.save('./data/project1/y_train_95.npy', arr=y_train_95)
+np.save('./data/project1/x_test_95.npy', arr=x_test_95)
+
+x_train_99 = train4_x.to_numpy()
+y_train_99 = train4_y.to_numpy()
+x_test_99 = test4.to_numpy()
+np.save('./data/project1/x_train_99.npy', arr=x_train_99)
+np.save('./data/project1/y_train_99.npy', arr=y_train_99)
+np.save('./data/project1/x_test_99.npy', arr=x_test_99)
 
