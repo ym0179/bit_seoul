@@ -1,5 +1,4 @@
 # 모델링 파트
-
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -7,6 +6,7 @@ import pandas as pd
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import accuracy_score, make_scorer, roc_auc_score
 from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV, RandomizedSearchCV
+pd.options.display.max_colwidth=999
 
 #load data
 x_train = np.load('./data/project1/x_train.npy',allow_pickle=True)
@@ -30,33 +30,32 @@ print("x test shape : ", test.shape) #(101338, 367)
 
 
 params = {
-    "n_estimators":[500, 800, 1000], 
-    "learning_rate":[0.01,0.001], 
-    "max_depth":range(3,10,3), 
-    "colsample_bytree":[0.5,0.6,0.7], 
+    "n_estimators":[500, 800, 1000], # n_estimators default = 100 (learning rate를 낮게 잡아줬으니까 충분한 학습을 위해 늘려줌)
+    "learning_rate":[0.01,0.05, 0.001], # learning_rate default = 0.1
+    "max_depth":range(3,10,3), # max_depth default = 6
+    "colsample_bytree":[0.5,0.6,0.7], # colsample_bytree default = 1 (항상 모든 나무에서 중요한 칼럼에만 몰두해서 학습 -> 과적합 위험) / 학습할 칼럼 수가 많기 때문에 0.5-0.7까지 잡음    
     "colsample_bylevel":[0.6,0.7,0.9],
     'min_child_weight':range(1,6,2),
-    # 'subsample' :  [0.8] ,
+    'subsample' :  [0.6, 0.8] ,
     'objective' : ['binary:logistic'],
     'eval_metric' : ['auc'],
     'tree_method' : ['gpu_hist']
     }
-# learning_rate default = 0.1
-# colsample_bytree default = 1 (항상 모든 나무에서 중요한 칼럼에만 몰두해서 학습 -> 과적합 위험) / 학습할 칼럼 수가 많기 때문에 0.5-0.7까지 잡음
-# max_depth default = 6 
-# n_estimators default = 100 (learning rate를 낮게 잡아줬으니까 충분한 학습을 위해 늘려줌)
-n_jobs = -1
+
 # scoring = {
 #     'AUC': 'roc_auc',
 #     "Accuracy": make_scorer(accuracy_score)
 # }
 
-model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=n_jobs, cv=5, verbose=1)
+model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=-1, cv=5, verbose=2, scoring='roc_auc', n_iter=10, refit=True, return_train_score=True)
 # model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=n_jobs, cv=5, verbose=1, scoring=scoring, refit="AUC")
 model.fit(x_train,y_train)
 
+df = pd.DataFrame(model.cv_results_)
+print(df.loc[:,['mean_test_score', 'params']])
+
 print("최적 하이퍼 파라미터 : ", model.best_params_)
-print("최고 정확도 : {0:.4f}".format(model.best_score_))
+print("최고 AUC : {0:.4f}".format(model.best_score_))
 
 model = model.best_estimator_
 
@@ -64,8 +63,8 @@ result = model.predict(test)
 sc = model.score(test,result)
 print("score : ", sc)
 
-result2 = model.predict(test)[:,1]
-print('ROC accuracy: {}'.format(roc_auc_score(test, val)))
+result2 = model.predict_proba(test)[:,1]
+print('ROC accuracy: {}'.format(roc_auc_score(test, result2)))
 
 import matplotlib.pyplot as plt
 def plot_feature_importances(model):
