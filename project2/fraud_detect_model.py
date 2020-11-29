@@ -20,13 +20,17 @@ test = np.load('./data/project1/x_test.npy',allow_pickle=True)
 # print("x test shape : ", test.shape) #(506691, 367)
 
 #모델 테스트를 위해 부분 데이터 잘라서 사용 (데이터 양이 너무 많음) - random으로 20%
-x_train, x_temp, y_train, x_temp = train_test_split(x_train, y_train, train_size=0.01, random_state=77)
-test, test_temp = train_test_split(test, train_size=0.01, random_state=77)
+x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.7, random_state=77)
+x_train, x_temp, y_train, y_temp = train_test_split(x_train, y_train, train_size=0.01, random_state=77)
+x_test, x_temp, y_test, y_temp = train_test_split(x_test, y_test, train_size=0.01, random_state=77)
+
+# test, test_temp = train_test_split(test, train_size=0.01, random_state=77)
 
 #random 20% 데이터
 print("x train shape : ", x_train.shape) #(118108, 367)
 print("y train shape : ", y_train.shape) #(118108,)
-print("x test shape : ", test.shape) #(101338, 367)
+print("x test shape : ", x_test.shape) #(101338, 367)
+print("y test shape : ", y_test.shape) #(101338, 367)
 
 
 params = {
@@ -59,12 +63,16 @@ print("최고 AUC : {0:.4f}".format(model.best_score_))
 
 model = model.best_estimator_
 
-result = model.predict(test)
-sc = model.score(test,result)
+result = model.predict(x_test)
+sc = model.score(y_test,result)
 print("score : ", sc)
 
-result2 = model.predict_proba(test)[:,1]
-print('ROC accuracy: {}'.format(roc_auc_score(test, result2)))
+acc = accuracy_score(y_test,result)
+print("acc : ", acc)
+
+result2 = model.predict_proba(x_test)[:,1]
+roc = roc_auc_score(y_test, result2)
+print("AUC : %.4f%%"%(roc*100))
 
 import matplotlib.pyplot as plt
 def plot_feature_importances(model):
@@ -111,7 +119,7 @@ selection = SelectFromModel(model, threshold=best_thresh, prefit=True)
 x_train = selection.transform(x_train)
 test = selection.transform(test)
 
-model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=n_jobs, cv=5)
+model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=-1, cv=5)
 
 model.fit(x_train,y_train)
 
