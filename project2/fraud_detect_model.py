@@ -1,18 +1,24 @@
 # 모델링 파트
-from xgboost import XGBClassifier
+from xgboost import XGBClassifier, plot_importance
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 from sklearn.feature_selection import SelectFromModel
-from sklearn.metrics import accuracy_score, make_scorer, roc_auc_score
-from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV, RandomizedSearchCV
+from sklearn.metrics import accuracy_score, make_scorer, roc_auc_score, roc_curve, auc
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV, RandomizedSearchCV, StratifiedKFold
+import matplotlib.pyplot as plt
+import xgboost
 pd.options.display.max_colwidth=999
+pd.options.display.max_rows=999
+
 
 #load data
-x_train = np.load('./data/project1/x_train.npy',allow_pickle=True)
-y_train = np.load('./data/project1/y_train.npy',allow_pickle=True)
-test = np.load('./data/project1/x_test.npy',allow_pickle=True)
+x_train = np.load('./data/project1/x_train_no_s.npy',allow_pickle=True)
+y_train = np.load('./data/project1/y_train_no_s.npy',allow_pickle=True)
+test = np.load('./data/project1/x_test_no_s.npy',allow_pickle=True)
+index = np.load('./data/project1/index_no_s.npy',allow_pickle=True)
 #파이썬에서 피클을 사용해 객체 배열(numpy 배열)을 저장할 수 있음 -> 배열의 내용이 일반 숫자 유형이 아닌 경우 (int/float) pickle를 사용해 array 저장
+print("index :",index)
 
 #shape
 # print("x train shape : ", x_train.shape) #(590540, 367)
@@ -34,29 +40,38 @@ print("y test shape : ", y_test.shape) #(101338, 367)
 
 
 params = {
-    "n_estimators":[500, 800, 1000], # n_estimators default = 100 (learning rate를 낮게 잡아줬으니까 충분한 학습을 위해 늘려줌)
-    "learning_rate":[0.01,0.05, 0.001], # learning_rate default = 0.1
+    "n_estimators":[500, 800, 1000, 1200], # n_estimators default = 100 (learning rate를 낮게 잡아줬으니까 충분한 학습을 위해 늘려줌)
+    "learning_rate":[0.01, 0.05, 0.001], # learning_rate default = 0.1
     "max_depth":range(3,10,3), # max_depth default = 6
     "colsample_bytree":[0.5,0.6,0.7], # colsample_bytree default = 1 (항상 모든 나무에서 중요한 칼럼에만 몰두해서 학습 -> 과적합 위험) / 학습할 칼럼 수가 많기 때문에 0.5-0.7까지 잡음    
     "colsample_bylevel":[0.6,0.7,0.9],
     'min_child_weight':range(1,6,2),
-    'subsample' :  [0.6, 0.8] ,
-    'objective' : ['binary:logistic'],
-    'eval_metric' : ['auc'],
-    'tree_method' : ['gpu_hist']
+    'subsample' :  [0.6, 0.8] 
+    # 'objective' : ['binary:logistic'],
+    # 'eval_metric' : ['auc'],
+    # 'tree_method' : ['gpu_hist']
     }
 
-# scoring = {
-#     'AUC': 'roc_auc',
-#     "Accuracy": make_scorer(accuracy_score)
-# }
+scoring = {
+    'AUC': 'roc_auc',
+}
 
-model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=-1, cv=5, verbose=2, scoring='roc_auc', n_iter=10, refit=True, return_train_score=True)
+kfold = KFold(n_splits=5, shuffle=True)
+skfold = StratifiedKFold(n_splits=5, shuffle=True)
+xgb = xgboost.XGBClassifier(tree_method='gpu_hist', 
+                            predictor='gpu_predictor',
+                            objective= 'binary:logistic',
+                            eval_metric= 'auc'
+                            )
+
+model = RandomizedSearchCV(xgb, params, cv=skfold, verbose=1, scoring=scoring, n_iter=10, refit='AUC', return_train_score=True, random_state=77)
+# Scoring: 평가 기준으로 할 함수 / cv: int, 교차검증 생성자 또는 반복자 / n_iter: int, 몇 번 반복하여 수행할 것인지에 대한 값
 # model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=n_jobs, cv=5, verbose=1, scoring=scoring, refit="AUC")
+
 model.fit(x_train,y_train)
 
 df = pd.DataFrame(model.cv_results_)
-print(df.loc[:,['mean_test_score', 'params']])
+# print("cv result : \n", df.loc[:,['mean_test_score', 'params']])
 
 print("최적 하이퍼 파라미터 : ", model.best_params_)
 print("최고 AUC : {0:.4f}".format(model.best_score_))
@@ -64,7 +79,7 @@ print("최고 AUC : {0:.4f}".format(model.best_score_))
 model = model.best_estimator_
 
 result = model.predict(x_test)
-sc = model.score(y_test,result)
+sc = model.score(x_test,y_test)
 print("score : ", sc)
 
 acc = accuracy_score(y_test,result)
@@ -73,13 +88,49 @@ print("acc : ", acc)
 result2 = model.predict_proba(x_test)[:,1]
 roc = roc_auc_score(y_test, result2)
 print("AUC : %.4f%%"%(roc*100))
+#roc curve 그리기
+false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, result2)
+roc_auc = auc(false_positive_rate, true_positive_rate)
+print("roc_auc :", roc_auc)
 
-import matplotlib.pyplot as plt
+plt.figure(figsize=(10,10))
+plt.title('Receiver Operating Characteristic')
+plt.plot(false_positive_rate,true_positive_rate, color='red',label = 'AUC = %0.2f' % roc_auc)
+plt.legend(loc = 'lower right')
+plt.plot([0, 1], [0, 1],linestyle='--')
+plt.axis('tight')
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
+
+print(model.feature_importances_)
+print(np.sort(model.feature_importances_)[:10])
+print(np.sort(model.feature_importances_))
+print(index[:10])
+
+plot_importance(model, max_num_features=20)
+plt.show()
+
+#Available importance_types = ['weight', 'gain', 'cover', 'total_gain', 'total_cover']
+# fig, ax = plt.subplots(3,1,figsize=(14,30))
+# nfeats = 15
+# importance_types = ['weight', 'cover', 'gain']
+
+# for i, imp_i in enumerate(importance_types):
+#     plot_importance(model, ax=ax[i], max_num_features=nfeats
+#                     , importance_type=imp_i
+#                     , xlabel=imp_i)
+#     plt.show()
+
 def plot_feature_importances(model):
     # n_features = x_train.shape[1]
     n_features = 10
-    plt.barh(np.arange(n_features),np.sort(model.feature_importances_)[10], align='center')
-    plt.yticks(np.arange(n_features), x_train.feature_names[10])
+    plt.figure(figsize=(10,10))
+    plt.title('Model Feature Importances')
+    feature_names = index
+    sorted_idx = model.feature_importances_.argsort()[::-1]
+    print("sorted_idx: ",sorted_idx)
+    plt.barh(feature_names[sorted_idx][:20], model.feature_importances_[sorted_idx][:20], align='center')
     plt.xlabel("Feature Imortances", size=15)
     plt.ylabel("Feautres", size=15)
     plt.ylim(-1, n_features)

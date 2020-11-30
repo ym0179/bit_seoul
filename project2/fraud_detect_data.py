@@ -147,30 +147,31 @@ for i in cat_cols:
     all_data[i] = le.fit_transform(list(all_data[i]))
 # print(all_data[['ProductCD','DeviceType']])
 
-'''
+
 # MinMaxScaler 수치형 칼럼만
 # StandardScaler => 평균과 표준편차 사용하기 때문에 부적합
 # 2차원 -> 수치형 칼럼만 뽑아서 numpy array로 바꿔줘야되는 불편함
 for i in num_cols:
     all_data[i] = (minmax_scale(all_data[i], feature_range=(0,1)))
-'''
+
 # 결측치 처리 수치형만 -1
 for i in num_cols:
     # print(col, "missing values: ", all_data[col].isnull().sum())
-    # all_data[i].fillna(-1, inplace=True)
-    all_data[i].fillna(all_data[i].min() - 1, inplace=True)
+    all_data[i].fillna(-1, inplace=True)
+    # all_data[i].fillna(all_data[i].min() - 1, inplace=True)
 
 # pd.set_option('display.max_columns', None)
 # pd.set_option('display.max_rows', None)
 # np.set_printoptions(threshold=np.inf)
 # print(all_data.columns.tolist())
-
+'''
 train2_x = all_data[:len(x_train)]
 train2_y = y_train
 test2 = all_data[len(x_train):]
 print("train : ",train2_x.shape) #(590540, 367)
 print("test: ",test2.shape) #(506691, 367)
 print("train_y: ",train2_y.shape) #(590540,)
+
 
 #npy 저장
 x_train = train2_x.to_numpy()
@@ -179,8 +180,9 @@ x_test = test2.to_numpy()
 np.save('./data/project1/x_train_no_s.npy', arr=x_train)
 np.save('./data/project1/y_train_no_s.npy', arr=y_train)
 np.save('./data/project1/x_test_no_s.npy', arr=x_test)
-
+np.save('./data/project1/index_no_s.npy', arr=train2_x.columns)
 '''
+
 # Vxxx 컬럼 PCA 적용하기! 292개의 컬럼 -> pca 0.9나 0.99 (누적된 분산의 비율이 95%, 99%가 되는 주성분 축, 차원을 선택)
 def PCA_change(df, cols, n_components, prefix='PCA_'):
     pca = PCA(n_components=n_components, random_state=77)
@@ -239,6 +241,7 @@ x_test_95 = test3.to_numpy()
 np.save('./data/project1/x_train_95.npy', arr=x_train_95)
 np.save('./data/project1/y_train_95.npy', arr=y_train_95)
 np.save('./data/project1/x_test_95.npy', arr=x_test_95)
+np.save('./data/project1/index_95.npy', arr=train3_x.columns)
 
 x_train_99 = train4_x.to_numpy()
 y_train_99 = train4_y.to_numpy()
@@ -246,4 +249,6 @@ x_test_99 = test4.to_numpy()
 np.save('./data/project1/x_train_99.npy', arr=x_train_99)
 np.save('./data/project1/y_train_99.npy', arr=y_train_99)
 np.save('./data/project1/x_test_99.npy', arr=x_test_99)
-'''
+np.save('./data/project1/index_99.npy', arr=train4_x.columns)
+
+
