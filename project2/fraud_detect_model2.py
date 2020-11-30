@@ -13,10 +13,10 @@ pd.options.display.max_rows=999
 SEED = 77
 
 #load data
-x_train = np.load('./data/project1/x_train_95.npy',allow_pickle=True)
-y_train = np.load('./data/project1/y_train_95.npy',allow_pickle=True)
-test = np.load('./data/project1/x_test_95.npy',allow_pickle=True)
-index = np.load('./data/project1/index_95.npy',allow_pickle=True)
+x_train = np.load('./data/project1/x_train.npy',allow_pickle=True)
+y_train = np.load('./data/project1/y_train.npy',allow_pickle=True)
+test = np.load('./data/project1/x_test.npy',allow_pickle=True)
+index = np.load('./data/project1/index_no_s.npy',allow_pickle=True)
 #파이썬에서 피클을 사용해 객체 배열(numpy 배열)을 저장할 수 있음 -> 배열의 내용이 일반 숫자 유형이 아닌 경우 (int/float) pickle를 사용해 array 저장
 # print("index :",index)
 
