@@ -1,5 +1,5 @@
 # 모델링 파트
-from xgboost import XGBClassifier, plot_importance
+from lightgbm import LGBMRegressor, LGBMClassifier, plot_importance
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
@@ -7,17 +7,16 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import accuracy_score, make_scorer, roc_auc_score, roc_curve, auc
 from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV, RandomizedSearchCV, StratifiedKFold
 import matplotlib.pyplot as plt
-import xgboost
+import lightgbm
 pd.options.display.max_colwidth=999
 pd.options.display.max_rows=999
 SEED = 77
 
-
 #load data
-x_train = np.load('./data/project1/x_train.npy',allow_pickle=True)
-y_train = np.load('./data/project1/y_train.npy',allow_pickle=True)
-test = np.load('./data/project1/x_test.npy',allow_pickle=True)
-index = np.load('./data/project1/index_no_s.npy',allow_pickle=True)
+x_train = np.load('./data/project1/x_train_95.npy',allow_pickle=True)
+y_train = np.load('./data/project1/y_train_95.npy',allow_pickle=True)
+test = np.load('./data/project1/x_test_95.npy',allow_pickle=True)
+index = np.load('./data/project1/index_95.npy',allow_pickle=True)
 #파이썬에서 피클을 사용해 객체 배열(numpy 배열)을 저장할 수 있음 -> 배열의 내용이 일반 숫자 유형이 아닌 경우 (int/float) pickle를 사용해 array 저장
 # print("index :",index)
 
@@ -27,13 +26,11 @@ index = np.load('./data/project1/index_no_s.npy',allow_pickle=True)
 # print("x test shape : ", test.shape) #(506691, 367)
 
 #모델 테스트를 위해 부분 데이터 잘라서 사용 (데이터 양이 너무 많음) - random으로 20%
-x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.7, random_state=SEED,stratify=y_train)
-x_train, x_temp, y_train, y_temp = train_test_split(x_train, y_train, train_size=0.4, random_state=SEED,stratify=y_train)
-x_test, x_temp, y_test, y_temp = train_test_split(x_test, y_test, train_size=0.4, random_state=SEED,stratify=y_test)
+x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.7, random_state=SEED, stratify=y_train)
+x_train, x_temp, y_train, y_temp = train_test_split(x_train, y_train, train_size=0.4, random_state=SEED, stratify=y_train)
+x_test, x_temp, y_test, y_temp = train_test_split(x_test, y_test, train_size=0.4, random_state=SEED, stratify=y_test)
 
 x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, train_size=0.8, random_state=SEED, stratify=y_train)
-
-# test, test_temp = train_test_split(test, train_size=0.01, random_state=77)
 
 #random 20% 데이터
 print("x train shape : ", x_train.shape) #(118108, 367)
@@ -43,16 +40,17 @@ print("y test shape : ", y_test.shape) #(101338, 367)
 
 
 params = {
-    "n_estimators":[500, 800, 1000, 1200], # n_estimators default = 100 (learning rate를 낮게 잡아줬으니까 충분한 학습을 위해 늘려줌)
-    "learning_rate":[0.01, 0.05, 0.001], # learning_rate default = 0.1
-    "max_depth":range(3,10,3), # max_depth default = 3
-    "colsample_bytree":[0.5,0.6,0.7], # colsample_bytree default = 1 (항상 모든 나무에서 중요한 칼럼에만 몰두해서 학습 -> 과적합 위험) / 학습할 칼럼 수가 많기 때문에 0.5-0.7까지 잡음    
-    "colsample_bylevel":[0.7,0.8,0.9],
-    'min_child_weight':range(1,6,2),
-    'subsample' :  [0.8,0.9], # default=1.0
-    'objective' : ['binary:logistic'],
+    "n_estimators":[500, 800, 1000], #  default=100, 반복 수행하는 트리의 개수 - 너무 크게 지정하면 학습 시간이 오래 걸리고 과적합이 발생
+    "learning_rate":[0.01, 0.05, 0.001], # learning_rate default = 0.1, n_estimators와 같이 튜닝
+    "num_leaves":[50], #하나의 트리가 가질 수 있는 최대 리프의 개수 - 높이면 정확도는 높아지지만 트리의 깊이가 커져 모델의 복잡도가 증가
+    "max_depth ":[6, 10, 15, 20], # default=3, 트리의 최대 깊이, 과적합을 방지하기 위해 num_leaves는 2^(max_depth)보다 작아야함
+    'min_child_samples':[20, 40, 60], #최종 결정 클래스인 Leaf Node가 되기 위해서 최소한으로 필요한 데이터 개체의 수, 과적합 제어
+    #너무 큰 숫자로 설정하면 under-fitting이 일어날 수 있으며, 아주 큰 데이터셋이라면 적어도 수백~수천 정도로 가정하는 것이 편리
+    'subsample' :  [0.8,0.9], #과적합을 제어하기 위해 데이터를 샘플링하는 비율
+    'colsample_bytree ' : [0.5,0.7,1], #default=1.0, 개별 트리를 학습할 때마다 무작위로 선택하는 피쳐의 비율을 제어
+    # 'objective' : ['binary:logistic'],
     # 'early_stopping_rounds' : [10]
-    # 'eval_metric' : ['auc'],
+    'eval_metric' : ['auc']
     # 'tree_method' : ['gpu_hist']
     }
 
@@ -62,19 +60,13 @@ scoring = {
 
 kfold = KFold(n_splits=5, shuffle=True, random_state=SEED)
 skfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
-xgb = xgboost.XGBClassifier(
-                            # feature_names=index,
+lgbm = lightgbm.LGBMClassifier(
                             tree_method='gpu_hist', 
                             predictor='gpu_predictor',
-                            reg_alpha=0.15, #default 1, 능선 회쉬(Ridge Regression)의 L2 정규화
-                            reg_lamdba=0.85, #default 0, 라쏘 회귀(Lasso Regression)의 L1 정규화, 차원이 높은 경우 알고리즘 속도를 높임
-                            # objective= 'binary:logistic',
-                            # eval_metric= 'auc',
                             random_state=SEED
                             )
 
-model = RandomizedSearchCV(xgb, params, n_jobs=-1, cv=kfold, scoring=scoring, 
-                        n_iter=5, verbose=1, refit='AUC', return_train_score=True, random_state=SEED)
+model = RandomizedSearchCV(lgbm, params, n_jobs=-1, cv=kfold, scoring=scoring, n_iter=10, verbose=1, refit='AUC', return_train_score=True, random_state=SEED)
 # Scoring: 평가 기준으로 할 함수 / cv: int, 교차검증 생성자 또는 반복자 / n_iter: int, 몇 번 반복하여 수행할 것인지에 대한 값
 # model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=n_jobs, cv=5, verbose=1, scoring=scoring, refit="AUC")
 
@@ -145,7 +137,6 @@ thresholds = np.sort(model.feature_importances_)
 print(thresholds)
 
 
-
 save_score = 0
 best_thresh = 0
 for thresh in thresholds:
@@ -154,10 +145,7 @@ for thresh in thresholds:
     select_x_train = selection.transform(x_train)
     select_test = selection.transform(x_test)
 
-    # selection_model =  XGBClassifier(n_jobs=-1,subsample= 0.8, objective= 'binary:logistic', n_estimators= 1200, min_child_weight= 1, 
-    #                                 max_depth= 6, learning_rate= 0.001, colsample_bytree= 0.7, colsample_bylevel= 0.6, eval_metric= 'auc',
-    #                                 tree_method='gpu_hist', predictor='gpu_predictor')
-    selection_model = XGBClassifier(n_jobs=-1)
+    selection_model = LGBMClassifier(n_jobs=-1)
     selection_model.fit(select_x_train,y_train)
     
     y_predict = selection_model.predict_proba(select_test)[:,1]
@@ -179,7 +167,7 @@ x_train = selection.transform(x_train)
 x_test = selection.transform(x_test)
 
 # model = RandomizedSearchCV(XGBClassifier(), params, n_jobs=-1, cv=5)
-model = RandomizedSearchCV(xgb, params, n_jobs=-1, cv=kfold, verbose=1, scoring=scoring, n_iter=3, refit='AUC', return_train_score=True, random_state=SEED)
+model = RandomizedSearchCV(lgbm, params, n_jobs=-1, cv=kfold, verbose=1, scoring=scoring, n_iter=5, refit='AUC', return_train_score=True, random_state=SEED)
 
 model.fit(x_train,y_train)
 
