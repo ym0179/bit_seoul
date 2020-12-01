@@ -181,6 +181,7 @@ def PCA_change(df, cols, n_components, prefix='PCA_'):
 # print(all_data.columns.get_loc("V321")) #336
 v_cols = all_data.columns[45:337]
 
+
 # PCA 95%
 all_data2 = PCA_change(all_data, v_cols, n_components=0.95, prefix='PCA_V_')
 print("원래 데이터 shape : ", all_data.shape) #원래 데이터 shape :  (1097231, 367)
