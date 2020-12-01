@@ -64,22 +64,18 @@ model.fit(x_train,y_train,
         early_stopping_rounds=100,
         )
 
-#cv 별 결과
+#cv 별 결과 출력
 df = pd.DataFrame(model.cv_results_)
 print("cv result : \n", df.iloc[:,[18,12]])
 df.T.to_csv('./data/project1/cv_results_.csv')
 
 print("최적 하이퍼 파라미터 : ", model.best_params_)
 print("최고 AUC : {0:.4f}".format(model.best_score_))
-
 model = model.best_estimator_
 
 result = model.predict(x_test)
-sc = model.score(x_test,y_test)
-print("score : ", sc)
-
 acc = accuracy_score(y_test,result)
-print("acc : ", acc)
+print("Accuracy : ", acc)
 
 result2 = model.predict_proba(x_test)[:,1]
 roc = roc_auc_score(y_test, result2)
@@ -128,15 +124,15 @@ for thresh in thresholds:
     y_predict = selection_model.predict_proba(select_test)[:,1]
     roc = roc_auc_score(y_test, result2)
 
-    print("Thresh=%.4f, n=%d, roc: %.4f%%" %(thresh, select_x_train.shape[1], roc))
+    # print("Thresh=%.4f, n=%d, roc: %.4f%%" %(thresh, select_x_train.shape[1], roc))
 
     if roc > save_score:
         save_score = roc
         best_thresh = thresh
-    print("best_thresh, save_score: ", best_thresh, save_score)
+    # print("best_thresh, save_score: ", best_thresh, save_score)
 
-print("=======================================")
-print("best_thresh, save_score: ", best_thresh, save_score)
+# print("=======================================")
+# print("best_thresh, save_score: ", best_thresh, save_score)
 
 selection = SelectFromModel(model, threshold=best_thresh, prefit=True)
 x_train = selection.transform(x_train)
@@ -151,9 +147,6 @@ print("최고 AUC : {0:.4f}".format(model.best_score_))
 model = model.best_estimator_
 
 result = model.predict(x_test)
-sc = model.score(x_test,y_test)
-print("score : ", sc)
-
 acc = accuracy_score(y_test,result)
 print("acc : ", acc)
 

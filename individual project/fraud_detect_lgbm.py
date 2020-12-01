@@ -24,7 +24,16 @@ index = np.load('./data/project1/index_no_s.npy',allow_pickle=True)
 x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.7, random_state=SEED, stratify=y_train)
 x_train, x_temp, y_train, y_temp = train_test_split(x_train, y_train, train_size=0.4, random_state=SEED, stratify=y_train)
 x_test, x_temp, y_test, y_temp = train_test_split(x_test, y_test, train_size=0.4, random_state=SEED, stratify=y_test)
+'''
+#PCA 적용 해보기
+pca = PCA(n_components=0.99) #데이터셋에 분산의 n%만 유지하도록 PCA를 적용
+x_train_95 = pca.fit_transform(x_train)
+x_test_95 = pca.transform(x_test)
+print('원래 차원(픽셀) 수 :',  x_train.shape[1])
+print('선택한 차원(픽셀) 수(0.99) :', pca.n_components_)
+'''
 x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, train_size=0.8, random_state=SEED, stratify=y_train)
+# x_train, x_val, y_train, y_val = train_test_split(x_train_95, y_train, train_size=0.8, random_state=SEED, stratify=y_train)
 
 #random 40% 데이터
 print("x train shape : ", x_train.shape) 
@@ -72,9 +81,6 @@ print("최고 AUC : {0:.4f}".format(model.best_score_))
 model = model.best_estimator_
 
 result = model.predict(x_test)
-sc = model.score(x_test,y_test)
-print("score : ", sc)
-
 acc = accuracy_score(y_test,result)
 print("acc : ", acc)
 
@@ -109,8 +115,3 @@ def plot_feature_importances(model):
 plot_feature_importances(model)
 plt.show()
 
-
-# #PCA 적용 해보기
-# pca = PCA(n_components=0.95) #데이터셋에 분산의 n%만 유지하도록 PCA를 적용
-# x = pca.fit_transform(x)
-# print('선택한 차원(픽셀) 수 :', pca.n_components_)

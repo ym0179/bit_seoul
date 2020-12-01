@@ -9,6 +9,7 @@ import tensorflow as tf
 from tensorflow.keras.datasets import mnist
 from tensorflow.python.keras.utils.data_utils import Sequence
 import autokeras as ak
+from sklearn.metrics import accuracy_score, make_scorer, roc_auc_score, roc_curve, auc
 
 x_train = np.load("./data/keras63_train_x.npy")
 x_test = np.load("./data/keras63_test_x.npy")
