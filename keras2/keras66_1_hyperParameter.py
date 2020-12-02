@@ -60,7 +60,7 @@ from tensorflow.keras.wrappers.scikit_learn import KerasClassifier, KerasRegress
 model = KerasClassifier(build_fn=build_model, verbose=1)
 
 # search = GridSearchCV(model, hyperparameters, cv=2)
-search = RandomizedSearchCV(model, hyperparameters, cv=3, n_jobs=-1)
+search = RandomizedSearchCV(model, hyperparameters, cv=3)
 
 search.fit(x_train,y_train) 
 # TypeError: estimator should be an estimator implementing 'fit' method, <function build_model at 0x0000020D6504F940> was passed

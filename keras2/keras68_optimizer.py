@@ -20,7 +20,7 @@ model.add(Dense(1))
 
 #3. 컴파일, 훈련
 from tensorflow.keras.optimizers import Adam, Adadelta, Adamax, Adagrad, RMSprop, SGD, Nadam
-#lr Default 0.001
+# lr Default 0.001
 # optimizer = Adam(lr=0.001) #loss :  3.154809855195062e-13 결과물 :  [[11.000001]]
 # optimizer = Adadelta(lr=0.001) #loss :  0.0002002382680075243 결과물 :  [[11.003489]]
 # optimizer = Adamax(lr=0.001) #loss :  7.807443762430921e-05 결과물 :  [[11.011876]]
