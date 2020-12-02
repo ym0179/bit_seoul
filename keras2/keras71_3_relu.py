@@ -39,10 +39,9 @@ def elu_func(x): # ELU(Exponential linear unit)
  
 plt.plot(x, elu_func(x), linestyle='--', label="ELU(Exponential linear unit)")
 
-def elu_func(x): # ELU(Exponential linear unit)
-    return (x>=0)*x + (x<0)*1*(np.exp(x)-1)
+def selu_func(x,a): # SELU(Scaled Exponential Linear Unit)
+    return (x>=0)*x + (x<0)*a*(np.exp(x)-1)
  
-plt.plot(x, elu_func(x), linestyle='--', label="ELU(Exponential linear unit)")
  
 def trelu_func(x): # Thresholded ReLU
     return (x>1)*x # 임계값(1) 조정 가능
@@ -50,3 +49,5 @@ def trelu_func(x): # Thresholded ReLU
 plt.plot(x, trelu_func(x), linestyle='--', label="Thresholded ReLU")
 
 plt.show()
+
+# https://keras.io/ko/layers/advanced-activations/

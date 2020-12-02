@@ -27,7 +27,7 @@ x_train = x_train.reshape(60000, 28, 28, 1).astype('float32')/255. #마지막은
 x_test = x_test.reshape(10000, 28, 28, 1).astype('float32')/255.
 
 #2. 모델
-def build_model(drop=0.5, optimizer='adam'): #batch_size는 선언 안해도 되는것?
+def build_model(drop=0.5, optimizer='adam', learn_rate=0.01, activation='relu'): #batch_size는 선언 안해도 되는것?
 
     inputs = Input(shape=(28,28,1), name='input')
     x = Conv2D(64, (2,2), padding="same", name='hidden1')(inputs)
@@ -51,9 +51,10 @@ def create_hyperparameters():
     batches = [1,8,16,32,64]
     optimizers = ['rmsprop','adam','adadelta']
     dropout = np.linspace(0.1,0.5,5).tolist()
-    # dropout = [0.1,0.2,0.3,0.4,0.5]
     epochs = [100, 200, 500]
-    return{"batch_size" : batches, "optimizer" : optimizers, "drop" : dropout, 'epochs' : epochs}
+    learn_rate = [0.1, 0.01,0.001]
+    activation = ['relu', 'selu','elu','tanh']
+    return{"batch_size" : batches, "optimizer" : optimizers, "drop" : dropout, 'epochs' : epochs, 'learn_rate':learn_rate, 'activation':activation}
 
 hyperparameters = create_hyperparameters()
 
@@ -71,10 +72,5 @@ print(search.best_params_)
 acc = search.score(x_test, y_test)
 print("최종 스코어 : ", acc)
 
-'''
-GridSearchCV
-
-RandomizedSearchCV
-'''
 
 # https://stackoverflow.com/questions/59746974/cannot-clone-object-tensorflow-python-keras-wrappers-scikit-learn-kerasclassifi
