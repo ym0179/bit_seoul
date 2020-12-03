@@ -84,7 +84,7 @@ def create_hyperparameters():
 
 hyperparameters = create_hyperparameters()
 
-stopper = EarlyStopping(monitor='val_acc', patience=3)
+stopper = EarlyStopping(monitor='acc', patience=3)
 fit_params = dict(callbacks=[stopper])
 
 model = KerasClassifier(build_fn=build_model, verbose=1)
