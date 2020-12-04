@@ -8,7 +8,25 @@ from tensorflow.keras.applications import DenseNet121, DenseNet169, DenseNet201
 from tensorflow.keras.applications import NASNetLarge, NASNetMobile
 from tensorflow.keras.layers import Dense, Flatten, BatchNormalization, Dropout, Activation
 from tensorflow.keras.models import Sequential
+'''
+model_list = [
+    VGG16, VGG19, Xception,
+    ResNet101, ResNet101V2,
+    ResNet152, ResNet152V2,
+    ResNet50, ResNet50V2,
+    InceptionResNetV2, InceptionV3,
+    MobileNet, MobileNetV2,
+    DenseNet121, DenseNet169, DenseNet201,
+    NASNetLarge, NASNetMobile,
+]
 
+for cnt in range(len(model_list)):
+    model = model_list[cnt]()
+    model.trainable = True
+    print('name:', model.name) 
+    print('weight:', len(vgg16.trainable_weights)) 
+    print('count_params:', model.count_params()) 
+'''
 model = ResNet50()
 # vgg16 = VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3)) 
 

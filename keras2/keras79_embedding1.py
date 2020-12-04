@@ -25,3 +25,6 @@ from tensorflow.keras.utils import to_categorical
 word_size = len(token.word_index)
 x = to_categorical(x, num_classes=word_size + 1) #원핫인코딩 0 빼고 1,2,3,4,5 임으로 총 6개
 print(x)
+
+#유사도 계산 (거리를 계산) 을 통해 embedding layer를 통과시켜
+#데이터를 수치화 시겨서 열을 2열로 바꿔줌 (x,y값) - 거리를 3차원에서 계산하면 3열로 만들 수 있음

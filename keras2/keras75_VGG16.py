@@ -25,7 +25,8 @@ vgg16 = VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3)) #�
                                   #색깔도... 컬러여야 하는 듯... channel=3이어야 한다
 
 
-vgg16.trainable=False #학습시키지 않겠다 이미지넷 가져다가 그대로 쓰겠다 
+vgg16.trainable=False 
+# 학습시키지 않겠다 이미지넷 가중치를 가져다가 그대로 쓰겠다 
 # 불러올 부분은 새롭게 학습되는 것이 아니므로 학습이 되지 않도록
 # model.trainable=True
 

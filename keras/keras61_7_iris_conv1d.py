@@ -46,9 +46,9 @@ y_pred = y_test[:10]
 
 #2. 모델링
 model = Sequential()
-# model.add(Conv1D(64, (3), padding="same", input_shape=(28,28)))
-# model.add(MaxPooling1D(pool_size=2))
-# model.add(Dropout(0.3))
+model.add(Conv1D(64, (3), padding="same", input_shape=(28,28)))
+model.add(MaxPooling1D(pool_size=2))
+model.add(Dropout(0.3))
 model.add(Conv1D(64, (2), padding="same"))
 model.add(MaxPooling1D(pool_size=2))
 model.add(Dropout(0.3))
