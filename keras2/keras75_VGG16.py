@@ -9,7 +9,7 @@ from tensorflow.keras.applications import VGG16
 from tensorflow.keras.layers import Dense, Flatten, BatchNormalization, Dropout, Activation
 from tensorflow.keras.models import Sequential
 
-# include_top:whether to include the 3 fully-connected layers at the top of the network
+# include_top은 전체 VGG16의 마지막 층, 즉 분류를 담당하는 곳을 불러올지 말지를 정하는 옵션
 # This will load the whole VGG16 network, including the top Dense layers.
 # Note: by specifying the shape of top layers, input tensor shape is forced
 # to be (224, 224, 3), therefore you can use it only on 224x224 images.
@@ -26,6 +26,7 @@ vgg16 = VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3)) #�
 
 
 vgg16.trainable=False #학습시키지 않겠다 이미지넷 가져다가 그대로 쓰겠다 
+# 불러올 부분은 새롭게 학습되는 것이 아니므로 학습이 되지 않도록
 # model.trainable=True
 
 vgg16.summary() 
