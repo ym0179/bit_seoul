@@ -1,5 +1,5 @@
 #Day18
-#2020-11-18
+#2020-12-02
 
 import numpy as np 
 import matplotlib.pyplot as plt  
