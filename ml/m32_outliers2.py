@@ -1,0 +1,55 @@
+#Day21
+#2020-12-07
+
+#이상치 제거
+#outliers1을 행렬형태에도 적용할 수 있도록 수정
+# percentile
+
+import numpy as np
+
+def outliers(data_out, column) :
+    column_data = data_out[:,column]
+    print(column_data)
+
+    quartile_1, quartile_3 = np.percentile(column_data, [25,75]) #데이터의 25%, 75%지점
+    print("1사분위 : ", quartile_1)
+    print("3사분위 : ", quartile_3)
+    iqr = quartile_3 - quartile_1
+    lower_bound = quartile_1 - (iqr * 1.5)
+    upper_bound = quartile_3 + (iqr * 1.5)
+    outlier_index = np.where((column_data > upper_bound) | (column_data < lower_bound))
+    print("outlier_index : ", outlier_index)
+    outlier_value = column_data[(column_data > upper_bound) | (column_data < lower_bound)]
+    print("outlier_value : ", outlier_value)
+    return outlier_index
+
+def outliers2(data_out) :
+    n,m = data_out.shape
+
+    for i in range(m): 
+        column_data = data_out[:,i]
+        print(column_data)
+
+        quartile_1, quartile_3 = np.percentile(column_data, [25,75]) #데이터의 25%, 75%지점
+        print("1사분위 : ", quartile_1)
+        print("3사분위 : ", quartile_3)
+        iqr = quartile_3 - quartile_1
+        lower_bound = quartile_1 - (iqr * 1.5)
+        upper_bound = quartile_3 + (iqr * 1.5)
+        outlier_index = np.where((column_data > upper_bound) | (column_data < lower_bound))
+        print("outlier_index : ", outlier_index)
+        outlier_value = column_data[(column_data > upper_bound) | (column_data < lower_bound)]
+        print("outlier_value : ", outlier_value)
+    return None
+
+a = np.array([[1,  3,   3,  10],
+             [1000,5,   5, 10000],
+             [3,   6,   3, 300],
+             [15,20000, 4, 100000],
+             [1, -1000, 3, 20],
+             ])
+             
+b = outliers(a,1)
+outliers2(a)
+
+print("이상치의 위치 : ",b) #index 값
