@@ -21,7 +21,10 @@ def outliers(data_out, column) :
     print("outlier_index : ", outlier_index)
     outlier_value = column_data[(column_data > upper_bound) | (column_data < lower_bound)]
     print("outlier_value : ", outlier_value)
-    return outlier_index
+
+    for i in range(len(outlier_value)) :
+        data_out = data_out[data_out[:,column] != outlier_value[i]]
+    return data_out
 
 def outliers2(data_out) :
     n,m = data_out.shape
@@ -40,16 +43,17 @@ def outliers2(data_out) :
         print("outlier_index : ", outlier_index)
         outlier_value = column_data[(column_data > upper_bound) | (column_data < lower_bound)]
         print("outlier_value : ", outlier_value)
-    return None
 
-a = np.array([[1,  3,   3,  10],
-             [1000,5,   5, 10000],
-             [3,   6,   3, 300],
-             [15,20000, 4, 100000],
-             [1, -1000, 3, 20],
-             ])
-             
-b = outliers(a,1)
+        for j in range(len(outlier_value)) :
+            data_out = data_out[data_out[:,i] != outlier_value[j]]
+    print("data_out : ", data_out)
+    return data_out
+
+a = np.array([[1,2,3,4,10000,6,7,5000,90,100],
+              [10000,20000,-100000,40000,50000,60000,70000,8,90000,100000]])
+a = a.transpose()
+# print("a : ", a)
+# b = outliers(a,0)
 outliers2(a)
 
-print("이상치의 위치 : ",b) #index 값
+# print("이상치의 위치 : ",b) #index 값
