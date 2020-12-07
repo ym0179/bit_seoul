@@ -62,3 +62,4 @@ model.fit(x_train, y_train, batch_size=64, epochs=100, callbacks=[es])
 
 acc = model.evaluate(x_test, y_test)[1] #metrics 반환
 print("acc : ", acc)
+#  acc :  0.8601199984550476
