@@ -21,6 +21,8 @@ print("acc: ", score)
 thresholds = np.sort(model.feature_importances_)
 print(thresholds)
 
+best_score = 0.0
+
 for thresh in thresholds:
     selection = SelectFromModel(model, threshold=thresh, prefit=True) #파라미터 더 있음
     
@@ -36,7 +38,16 @@ for thresh in thresholds:
     print("Thresh=%.3f, n=%d, acc: %.2f%%" %(thresh, select_x_train.shape[1], score))
 
     #모델 + 가중치 저장
-    # pickle.dump(model, open("./save/xgb_save/m37_boston.{thresh:%.2f}-{score:%.2f}.pickle.dat" %(thresh,  score),"wb"))
-    # pickle.dump(model, open("./save/xgb_save/m37_boston.pickle.dat","wb"))
-    model.save_model("./save/xgb_save/m37_cancer.pickle." + str(np.round_(score,2)) + ".dat")
+    model.save_model("./save/xgb_save/m37_cancer.xgb." + str(np.round_(score,2)) + ".model")
     print("saved successfully")
+
+    if best_score < score:
+        best_score = score
+        model.save_model("./save/xgb_save/m37_cancer.xgb.best.model")
+
+model2 = XGBClassifier() #xgbclassifier 명시
+model2.load_model('./save/xgb_save/m37_cancer.xgb.best.model')
+print("loaded successfully")
+
+acc2 = model2.score(x_test,y_test)
+print("acc2 : ", acc2) #acc2 :  0.9736842105263158

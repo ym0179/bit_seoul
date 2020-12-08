@@ -21,6 +21,7 @@ print("R2: ", score)
 thresholds = np.sort(model.feature_importances_)
 print(thresholds)
 
+best_score = 0.0
 for thresh in thresholds:
     selection = SelectFromModel(model, threshold=thresh, prefit=True) #파라미터 더 있음
     
@@ -36,7 +37,15 @@ for thresh in thresholds:
     print("Thresh=%.3f, n=%d, R2: %.2f%%" %(thresh, select_x_train.shape[1], score))
 
     #모델 + 가중치 저장
-    # pickle.dump(model, open("./save/xgb_save/m37_boston.{thresh:%.2f}-{score:%.2f}.pickle.dat" %(thresh,  score),"wb"))
-    # pickle.dump(model, open("./save/xgb_save/m37_boston.pickle.dat","wb"))
-    model.save_model("./save/xgb_save/m37_boston.pickle." + str(np.round_(score,2)) + ".dat")
+    pickle.dump(model, open("./save/xgb_save/m37_boston.pickle." + str(np.round_(score,2)) + ".dat","wb"))
+    # model.save_model("./save/xgb_save/m37_boston.pickle." + str(np.round_(score,2)) + ".dat")
     print("saved successfully")
+
+    if best_score < score:
+        best_score = score
+        pickle.dump(model, open('./save/xgb_save/m37_boston_best.pickle.dat','wb'))
+
+model2 = pickle.load(open("./save/xgb_save/m37_boston_best.pickle.dat","rb"))
+print("loaded successfully")
+r2 = model2.score(x_test,y_test)
+print("R2 : ", r2)
