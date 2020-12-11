@@ -20,3 +20,5 @@ tf_cert_practice/.idea/*
 .idea/vcs.xml
 .idea/.gitignore
 .idea/inspectionProfiles/profiles_settings.xml
+tf_cert_practice/*
+tf_cert_practice/Category1/starter.py
