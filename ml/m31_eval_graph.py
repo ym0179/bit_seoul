@@ -51,7 +51,7 @@ print("R2: ", score) #R2:  0.9018263688695799
 
 #그래프
 import matplotlib.pyplot as plt
-
+print("===", (results['validation_0']['logloss']).type)
 epochs = len(results['validation_0']['logloss'])
 x_axis = range(0,epochs)
 
